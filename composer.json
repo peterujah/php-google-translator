@@ -22,9 +22,5 @@
     "archive": {
       "exclude": ["assets"]
     },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "minimum-stability": "stable",
     "prefer-stable": true
 }
