@@ -1,5 +1,5 @@
 # php-google-translator
-Php wrapper for google translator plugin
+Php wrapper for google javascript translator website plugin. It will create a dropdown option for languages.
 
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/en.jpg)
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/cn.jpg)
@@ -33,6 +33,20 @@ Set the fag icon type, `PNG` or `SVG` to use icons download country flag icon an
 $translate->setIconType(GTranslator::PNG || GTranslator::SVG);
 $translate->setIconPath("https://foo.com/assets/flags/");
  ```
+ Add additional langues
+ 
+ ```php
+ $translate->addLanguage("en", "English")->addLanguage("ig", "Igbo");
+ ```
+ 
+ Load languages 
+ 
+ ```php
+ $translate->setLanguages([
+  "en" => "English",
+  "ig" => "Igbo"
+ ])
+ ``
  
  ```php
 <?php 
