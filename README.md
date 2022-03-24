@@ -27,7 +27,7 @@ $translate->setIconType(GTranslator::PNG || GTranslator::SVG);
 $translate->setIconPath("https://foo.com/assets/icons/flags/");
  ```
  
- ```html
+ ```html, php
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -35,7 +35,7 @@ $translate->setIconPath("https://foo.com/assets/icons/flags/");
   </head>
   <body>
       <div class="button">
-        <?php $translate->Selectors();?>
+        <?php $translate->start();?>
       </div>
       <div class="content">
         <h2>We have a long history of service in the Bay Area</h2>
@@ -47,7 +47,7 @@ $translate->setIconPath("https://foo.com/assets/icons/flags/");
           We believe in banking locally and hope you will too. 
         </p>
       </div>
-      <?php $trans->loadTranslatorScript();?>
+      <?php $trans->run();?>
   </body>
 </html>
 ```
