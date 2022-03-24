@@ -16,7 +16,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PeterUjah\\NanoBlock\\GTranslator\\": "src/"
+            "Peterujah\\NanoBlock\\": "src/"
+        }
+    },
+     "extra": {
+        "branch-alias": {
+            "dev-master": "1.4-dev"
         }
     },
     "archive": {
