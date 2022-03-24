@@ -46,7 +46,9 @@ $translate->setIconPath("https://foo.com/assets/flags/");
   "en" => "English",
   "ig" => "Igbo"
  ])
- ``
+ ```
+ 
+ Full usage on website to translate webpage
  
  ```php
 <?php 
