@@ -48,7 +48,7 @@ $translate->setIconPath("https://foo.com/assets/icons/flags/");
           We believe in banking locally and hope you will too. 
         </p>
       </div>
-      <?php $trans->load();?>
+      <?php $translate->load();?>
   </body>
 </html>
 ```
