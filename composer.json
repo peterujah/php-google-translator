@@ -1,0 +1,22 @@
+{
+    "name": "peterujah/php-google-translator",
+    "description": "PHP Google Javascript Website Translator Plugin",
+    "keywords": ["google", "translate", "translator", "php", "translating"],
+    "license": "MIT",
+    "type": "library",
+    "homepage": "https://github.com/peterujah/php-google-translator",
+    "authors": [
+        {
+            "name": "Ujah Chigozie",
+            "email": "ujahchigozie@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0 || ^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "PeterUjah\\NanoBlock\\GTranslator\\": "src/"
+        }
+    }
+}
