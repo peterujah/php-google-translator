@@ -21,7 +21,7 @@
     },
     "archive": {
       "exclude": ["assets"]
-    }
+    },
     "config": {
         "preferred-install": "dist"
     },
