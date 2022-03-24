@@ -1,7 +1,8 @@
 # php-google-translator
 Php wrapper for google translator plugin
 
-![alt text](https://github.com/peterujah/Hierarchical/blob/c0fcb5bc6be51763ae3a04d04e56694d682b7ec5/Screen%20Shot%202021-10-01%20at%206.12.50%20AM.png)
+![alt text](https://github.com/peterujah/php-google-translator/blob/7bbe24a97e3a140a7c15a84e1188cf2bd7e7ec69/assets/cn.png)
+![alt text](https://github.com/peterujah/php-google-translator/blob/7bbe24a97e3a140a7c15a84e1188cf2bd7e7ec69/assets/cn.png)
 
 
 ## Installation
