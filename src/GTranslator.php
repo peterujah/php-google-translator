@@ -1,6 +1,6 @@
 <?php 
 /**
- * Cache - A simple php class for google translator
+ * Cache - A simple php class for google javascript translator
  * @author      Peter Chigozie(NG) peterujah
  * @copyright   Copyright (c), 2022 Peter(NG) peterujah
  * @license     MIT public license
@@ -99,7 +99,7 @@ class GTranslator{
     */
     public function __construct($lang = "en", $dir = "/"){
         $this->siteLang = $lang;
-        $this->iconPath = $dir;
+        $this->setIconPath($dir);
         $this->setIconType(self::PNG);
         $this->setProvider(self::DEFAULT);
     }
@@ -146,6 +146,16 @@ class GTranslator{
     }
 
     /**
+     * Sets icon directory path
+     * @param string $path 
+     * @return GTranslator $this
+    */
+    public function setIconPath($path){
+        $this->iconPath = $path;
+        return $this;
+    }
+
+    /**
      * Sets selectors additional link class name
      * @param string $cls
      * @return GTranslator $this
@@ -176,7 +186,7 @@ class GTranslator{
             if($li){
                 $links .= '<li class="drop-li">';
             }
-            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\');return false;" title="'.$value.'" class="' . $this->linkClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
+            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\');return false;" lang="'.$key.'" title="'.$value.'" class="' . $this->linkClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
             if($li){
                 $links .= '</li>';
             }
@@ -231,7 +241,7 @@ class GTranslator{
      * Returns computed selector based on provider
      * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
     */
-    public function Selectors(){
+    public function button(){
         if(empty($this->languages)){
             trigger_error("Error: make sure you add languages first");
             return;
@@ -247,7 +257,7 @@ class GTranslator{
      * Renders translator javascript & css engine
      * @return GTranslator $this
     */
-    public function startScript(){
+    public function load(){
         echo $this->addScript(), $this->addCss();
     }
     
@@ -383,6 +393,18 @@ class GTranslator{
                             }
                         });
                     });
+
+                    if(GTranslator.Current() != null){
+                        document.querySelectorAll('.drop-li').forEach(function(ele, i){
+                           if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){";
+                            if($this->provider == self::DEFAULT){
+                                    $JSScript .= "document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';";
+                                }else if($this->provider == self::BOOTSTRAP){
+                                    $JSScript .= "document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent;";
+                                }
+                            $JSScript .= "}
+                        });
+                    }
                 }
             };
 
@@ -411,7 +433,7 @@ class GTranslator{
         if($this->provider == self::DEFAULT){
             $styleSheet .= "
                 .g-translator-custom {position: relative;}
-                .g-translator-custom .toggle-translator {font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:170px;line-height:17px;position: absolute;right: 0;}
+                .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:170px;line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px;}
                 .g-translator-custom a {text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;}
                 .g-translator-custom a img {vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8;}
                 .g-translator-custom a:hover img{opacity:1;}
@@ -419,13 +441,13 @@ class GTranslator{
                 .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px;}
                 .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px;}
                 .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1);}
-                .g-translator-custom .language-options {position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;}
-                .g-translator-custom .language-options a{background:#FFC;color:#000;padding:5px 8px;}
+                .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px;}
+                .g-translator-custom .language-options li{list-style-type: none;}
+                .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px;}
                 .g-translator-custom .language-options a:hover {background:#FFC;}
                 .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5;}
                 .g-translator-custom .language-options::-webkit-scrollbar {width:5px;}
                 .g-translator-custom .language-options::-webkit-scrollbar-thumb {border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888;}
-                .g-translator-custom .language-options{border-radius: 16px; z-index: 100;display: none;}
                 .g-translator-custom #php-g-translator img{margin-right:2px;}
             ";
         }
