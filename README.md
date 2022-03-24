@@ -11,7 +11,7 @@ composer require peterujah/php-google-translator
 # USAGES
 
 ```php 
-$translate = new \NFTFunctions\GTranslator("en", "/assets/falgs/");
+$translate = new Peterujah\NanoBlock\GTranslator("en", "/assets/falgs/");
 ```
 
 set selector design provider, you can choose between `DEFAULT` style and `BOOTSTRAP.`
@@ -28,7 +28,7 @@ $translate->setIconPath("https://foo.com/assets/icons/flags/");
  ```
  
  ```php
-<?php $translate = new \NFTFunctions\GTranslator("en", "/assets/falgs/");?>
+<?php $translate = new Peterujah\NanoBlock\GTranslator("en", "/assets/falgs/");?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
