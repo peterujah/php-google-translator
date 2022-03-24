@@ -18,5 +18,13 @@
         "psr-4": {
             "PeterUjah\\NanoBlock\\GTranslator\\": "src/"
         }
+    },
+    "archive": {
+      "exclude": ["assets"]
     }
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "stable"
+    "prefer-stable": true
 }
