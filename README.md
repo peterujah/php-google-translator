@@ -28,6 +28,7 @@ $translate->setIconPath("https://foo.com/assets/icons/flags/");
  ```
  
  ```php
+<?php $translate = new \NFTFunctions\GTranslator("en", "/assets/falgs/");?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
