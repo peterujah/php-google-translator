@@ -27,7 +27,7 @@ $translate->setIconType(GTranslator::PNG || GTranslator::SVG);
 $translate->setIconPath("https://foo.com/assets/icons/flags/");
  ```
  
- ```html_php
+ ```php
 <!DOCTYPE html>
 <html lang="en">
   <head>
