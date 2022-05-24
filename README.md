@@ -48,6 +48,16 @@ $translate->setIconPath("https://foo.com/assets/flags/");
  ])
  ```
  
+ Display select option for languages, it accepts optional width.
+ ```php 
+ $translate->button(optional width = "50%");
+ ```
+ 
+ Load supportes javascript plugin
+ ```php 
+ $translate->load();
+ ```
+ 
  Full usage on website to translate webpage
  
  ```php
