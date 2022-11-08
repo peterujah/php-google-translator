@@ -19,11 +19,6 @@
             "Peterujah\\NanoBlock\\": "src/"
         }
     },
-     "extra": {
-        "branch-alias": {
-            "dev-master": "1.4-dev"
-        }
-    },
     "archive": {
       "exclude": ["assets"]
     },
