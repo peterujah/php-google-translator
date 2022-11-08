@@ -58,6 +58,11 @@ $translate->setIconPath("https://foo.com/assets/flags/");
  $translate->load();
  ```
  
+  Force translate page once pages is loaded, this must be called after `$translate->load();`
+ ```php 
+ $translate->forceLanguage("ms");
+ ```
+ 
  Full usage on website to translate webpage
  
  ```php
@@ -84,7 +89,7 @@ $translate->setIconPath("https://foo.com/assets/flags/");
           We believe in banking locally and hope you will too. 
         </p>
       </div>
-      <?php $translate->load();?>
+      <?php $translate->load();$translate->forceLanguage("jp");?>
   </body>
 </html>
 ```
