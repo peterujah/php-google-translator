@@ -1,15 +1,28 @@
 <?php 
 class GoogleJavaScript{
-    public static function printScript($provider, $siteLang = "en", $element = "demo_element2"){  
-        $JSScript = "<script>
+    private const DEFAULT = 1;
+    private const BOOTSTRAP = 2;
+    private $siteLang = "en";
+    private $element = "demo_element2";
+    
+    public static function printScript($provider, $lng = "en", $element = "demo_element2"){  
+        $this->siteLang = $lng;
+        $this->element = $element;
+         $JSScript = "<script>
         var GTranslator = {
-            siteLang: \"{$siteLang}\",
-            googleElement: \"{$element}\",
+            siteLang: \"{$this->siteLang}\",
+            googleElement: \"{$this->element}\",
             OPTION_ACTIVE: false,
+            Languages: " . json_encode($this->languages) . ",
+
+            GButton: function(){
+                return document.getElementById('php-g-translator');
+            },
+
             Current: function() {
                 var keyValue = document['cookie'].match('(^|;) ?googtrans=([^;]*)(;|$)'); return keyValue ? keyValue[2].split('/')[2] : GTranslator.siteLang;
             },
-        
+            
             Event: function(element,event){
                 try{
                     if(document.createEventObject){
@@ -25,7 +38,7 @@ class GoogleJavaScript{
             },
 
             GoogleInit: function() {
-                new google.translate.TranslateElement({pageLanguage: \"{$siteLang}\", autoDisplay: false}, GTranslator.googleElement);
+                new google.translate.TranslateElement({pageLanguage: \"{$this->siteLang}\", autoDisplay: false}, GTranslator.googleElement);
             },
         
             GoogleScript: function(){
@@ -77,13 +90,14 @@ class GoogleJavaScript{
                 var from = langs[0];
                 var lang = langs[1];
                 GTranslator.runTranslate(from, lang);";
-                if($provider == 1){
-                    $JSScript .= "document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + lang + '\" src=\"{$iconPath}' + lang + '{$iconType}\"> ' + self.getAttribute('title') + '<span class=\"toggle-cert\"></span>';";
-                }else if($provider == 2){
-                    $JSScript .= "document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + lang + '\" src=\"{$iconPath}' + GTranslator.Current() + '{$iconType}\"> ' + self.getAttribute('title');";
+                if($this->provider == self::DEFAULT){
+                    $JSScript .= "GTranslator.GButton().innerHTML = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + lang + '{$this->iconType}\"> ' + GTranslator.Languages[lang] + '<span class=\"toggle-cert\"></span>';";
+                }else if($this->provider == self::BOOTSTRAP){
+                    $JSScript .= "GTranslator.GButton().innerHTML = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + GTranslator.Languages[lang];";
                 }
             $JSScript .= "},";
-            if($provider == 1){
+        
+            if($this->provider == self::DEFAULT){
                 $JSScript .= "
                     toggle: function() {
                         var x = document.getElementById('php-gt-languages');
@@ -99,8 +113,7 @@ class GoogleJavaScript{
                     },
                 
                     toggleClass: function() {
-                        var element = document.getElementById('php-g-translator');
-                        element.classList.toggle('open');
+                        GTranslator.GButton().classList.toggle('open');
                     },
                 
                     Init: function(){
@@ -131,19 +144,19 @@ class GoogleJavaScript{
                             });if(GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
                                 if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
-                                    document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$iconPath}' + GTranslator.Current() + '{$iconType}\"> ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';
+                                    GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';
                                 }
                             });
                         }
                     }
                 };";
-            }else if($provider == 2){
+            }else if($this->provider == self::BOOTSTRAP){
                 $JSScript .= "
                     Init: function(){
                         GTranslator.GoogleScript();if(GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
                                 if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
-                                    document.getElementById('php-g-translator').innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$iconPath}' + GTranslator.Current() + '{$iconType}\"> ' + ele.firstChild.textContent;
+                                    GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent;
                                 }
                             });
                         }
