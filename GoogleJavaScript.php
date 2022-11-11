@@ -89,13 +89,15 @@ class GoogleJavaScript{
                 var langs = lang_pair.split('|');
                 var from = langs[0];
                 var lang = langs[1];
-                GTranslator.runTranslate(from, lang);";
+                GTranslator.runTranslate(from, lang);
+                if(GTranslator.GButton() != null){";
                 if($this->provider == self::DEFAULT){
                     $JSScript .= "GTranslator.GButton().innerHTML = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + lang + '{$this->iconType}\"> ' + GTranslator.Languages[lang] + '<span class=\"toggle-cert\"></span>';";
                 }else if($this->provider == self::BOOTSTRAP){
                     $JSScript .= "GTranslator.GButton().innerHTML = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + GTranslator.Languages[lang];";
                 }
-            $JSScript .= "},";
+            $JSScript .= "}
+            },";
         
             if($this->provider == self::DEFAULT){
                 $JSScript .= "
@@ -143,7 +145,7 @@ class GoogleJavaScript{
                                 });
                             });if(GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
-                                if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
+                                 if(GTranslator.GButton() != null && GTranslator.Current() == ele.firstChild.getAttribute('lang')){
                                     GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';
                                 }
                             });
@@ -155,7 +157,7 @@ class GoogleJavaScript{
                     Init: function(){
                         GTranslator.GoogleScript();if(GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
-                                if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
+                                if(GTranslator.GButton() != null && GTranslator.Current() == ele.firstChild.getAttribute('lang')){
                                     GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent;
                                 }
                             });
