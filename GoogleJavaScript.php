@@ -115,7 +115,9 @@ class GoogleJavaScript{
                     },
                 
                     toggleClass: function() {
-                        GTranslator.GButton().classList.toggle('open');
+                        if(GTranslator.GButton() != null){
+                            GTranslator.GButton().classList.toggle('open');
+                        }
                     },
                 
                     Init: function(){
