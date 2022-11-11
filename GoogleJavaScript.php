@@ -121,12 +121,15 @@ class GoogleJavaScript{
                     },
                 
                     Init: function(){
-                        GTranslator.GoogleScript(); var wheel = document.getElementById('php-gt-languages');
+                        GTranslator.GoogleScript(); 
+                        if(typeof document.getElementsByClassName('toggle-languages')[0] != 'undefined'){
                             document.getElementsByClassName('toggle-languages')[0].onclick = function(event) {
                                 event.preventDefault();
                                 GTranslator.toggle();
                                 GTranslator.toggleClass();
                             };
+                        }
+                        if(wheel = document.getElementById('php-gt-languages')){
                 
                             wheel.addEventListener('wheel', function(event){
                                 if (window.getComputedStyle(wheel).display === 'block') {
@@ -145,14 +148,17 @@ class GoogleJavaScript{
                                         GTranslator.toggleClass();
                                     }
                                 });
-                            });if(GTranslator.Current() != null){
+                            });
+                         }
+                            
+                        if(GTranslator.GButton() != null && GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
-                                 if(GTranslator.GButton() != null && GTranslator.Current() == ele.firstChild.getAttribute('lang')){
+                                 if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
                                     GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';
-                                }
+                                 }
                             });
                         }
-                    }
+                   }
                 };";
             }else if($this->provider == self::BOOTSTRAP){
                 $JSScript .= "
