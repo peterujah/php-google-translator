@@ -172,6 +172,15 @@ class GoogleJavaScript{
                         }
                     }
                 };";
+            }else if($this->provider == self::SELECT){
+                $JSScript .= "}},
+                    trigger: function(self){
+                        GTranslator.Translate(null, '{$this->siteLang}|' + self.value);return false;
+                    },
+                    Init:function(){
+                        GTranslator.GoogleScript();
+                    }
+                };";
             }
 
             $JSScript .= "
