@@ -228,7 +228,7 @@ class GTranslator{
     */
     private function selectOptions(){
         $links = '';
-        $links .= '<select onchange="GTranslator.trigger(this)" class="' . $this->linkClass . '">';
+        $links .= '<select onchange="GTranslator.trigger(this)" class="notranslate ' . $this->linkClass . '">';
         foreach($this->languages as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
