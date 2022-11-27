@@ -36,6 +36,13 @@ class GTranslator{
     const BOOTSTRAP = 2;
 
     /**
+     * Hold type select options language selector ui design 
+     *
+     * @var int
+    */
+    const SELECT = 3;
+
+    /**
      * Hold google translator element id name 
      *
      * @var string
@@ -216,6 +223,20 @@ class GTranslator{
     }
 
     /**
+     * Builds language selector select options
+     * @return html|string $html select 
+    */
+    private function selectOptions(){
+        $links = '';
+        $links .= '<select onchange="GTranslator.trigger(this)" class="' . $this->linkClass . '">';
+        foreach($this->languages as $key => $value){
+            $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
+        }
+        $links .= '</select>';
+        return $links;
+    }
+
+    /**
      * Builds selector design for default ui
      * @return html|string $html
     */
@@ -270,6 +291,8 @@ class GTranslator{
         }
         if($this->provider == self::BOOTSTRAP){
             echo $this->selectorBootstrap();
+        }else if($this->provider == self::SELECT){
+            echo $this->selectOptions();
         }else{
             echo $this->selectorCustom();
         }
@@ -303,6 +326,8 @@ class GTranslator{
                 document.querySelectorAll(\".drop-li\").forEach(function(a,c){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent+'<span class=\"toggle-cert\"></span>')})}};";
         }else if($this->provider == self::BOOTSTRAP){
             $JSScript .= "Init:function(){GTranslator.GoogleScript();null!=GTranslator.Current()&&document.querySelectorAll(\".drop-li\").forEach(function(a,b){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent)})}};";
+        }else if($this->provider == self::SELECT){
+            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);return false;},Init:function(){GTranslator.GoogleScript();}};";
         }
         $JSScript .= "(function(){GTranslator.Init()})();</script>";
         return  $JSScript;
