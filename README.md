@@ -21,10 +21,10 @@ use Peterujah\NanoBlock\GTranslator;
 $translate = new GTranslator("en", "/assets/flags/");
 ```
 
-set selector design provider, you can choose between `DEFAULT` style and `BOOTSTRAP.`
+set selector design provider, you can choose between `DEFAULT`, `SELECT` or `BOOTSTRAP.`
 The `DEFAULT` is the default provider
 ```php 
-$this->setProvider(GTranslator::DEFAULT || GTranslator::BOOTSTRAP);
+$translate->setProvider(GTranslator::DEFAULT || GTranslator::SELECT || GTranslator::BOOTSTRAP);
 ```
 
 Set the fag icon type, `PNG` or `SVG` to use icons download country flag icon and set the Relative or Absolute path
@@ -51,6 +51,11 @@ $translate->setIconPath("https://foo.com/assets/flags/");
  Display select option for languages, it accepts optional width.
  ```php 
  $translate->button(optional width = "50%");
+ ```
+ 
+ When your provider is `GTranslator::SELECT`, button will return a html select option 
+  ```php 
+ $translate->button();
  ```
  
  Load supportes javascript plugin
