@@ -227,8 +227,8 @@ class GTranslator{
      * @return html|string $html select 
     */
     private function selectOptions(){
-        $links = '';
-        $links .= '<select onchange="GTranslator.trigger(this)" class="notranslate ' . $this->linkClass . '">';
+        $this->setLinkClass("select-language-item");
+        $links = '<select onchange="GTranslator.trigger(this)" class="notranslate ' . $this->linkClass . '">';
         foreach($this->languages as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
@@ -342,6 +342,9 @@ class GTranslator{
         $styleSheet = " <style> body{top:0 !important} #{$this->element}{display:none!important} #goog-gt-tt{display:none !important} .goog-te-banner-frame{display:none !important} .goog-te-menu-value:hover{text-decoration:none !important} .goog-text-highlight{background-color:transparent !important;box-shadow:none !important} #php-g-translator img{height:16px;width:16px}";
         if($this->provider == self::DEFAULT){
             $styleSheet .= ".g-translator-custom{position: relative} .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} .g-translator-custom a:hover img{opacity:1} .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} .g-translator-custom .language-options::-webkit-scrollbar{width:5px} .g-translator-custom .language-options::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888} .g-translator-custom #php-g-translator img{margin-right:2px} ";
+        }
+        if($this->provider == self::SELECT){
+            $styleSheet .= ".select-language-item{padding: 6px 12px;}";
         }
         $styleSheet .= "</style>";
         return $styleSheet;
