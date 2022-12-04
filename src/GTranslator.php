@@ -233,6 +233,7 @@ class GTranslator{
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
         $links .= '</select>';
+        $links .= '<div id="'.$this->element.'"></div>';
         return $links;
     }
 
