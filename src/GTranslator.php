@@ -103,7 +103,7 @@ class GTranslator{
      *
      * @var int
     */
-    private $provider
+    private $provider;
 
     /**
      * Hold bootstrap design provider version
