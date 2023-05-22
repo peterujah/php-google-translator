@@ -82,7 +82,7 @@ class GTranslator{
      *
      * @var string
     */
-    private $siteLang = "en";
+    public $siteLang = "en";
 
     /**
      * Hold path to country flag icons directory
@@ -270,7 +270,7 @@ class GTranslator{
     */
     private function selectOptions(){
         $this->setLinkClass("select-language-item");
-        $links = '<select onchange="GTranslator.trigger(this)" class="notranslate ' . $this->linkClass . '">';
+        $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select ' . $this->linkClass . '">';
         foreach($this->languages as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
@@ -370,7 +370,7 @@ class GTranslator{
         }else if($this->provider == self::BOOTSTRAP){
             $JSScript .= "Init:function(){GTranslator.GoogleScript();null!=GTranslator.Current()&&document.querySelectorAll(\".drop-li\").forEach(function(a,b){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent)})}};";
         }else if($this->provider == self::SELECT){
-            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);localStorage.setItem('siteLang', self.value);localStorage.setItem('changeLang', 1);return false;},Init:function(){GTranslator.GoogleScript();}};";
+            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);localStorage.setItem('siteLang', self.value);localStorage.setItem('changeLang', 1);return false;},Init:function(){GTranslator.GoogleScript();if(null!=GTranslator.Current()){document.getElementsByClassName('php-language-select').value=GTranslator.Current();}}};";
         }
         $JSScript .= "(function(){GTranslator.Init();document.body.classList.add('php-google-translator');})();</script>";
         return  $JSScript;
