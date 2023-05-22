@@ -368,9 +368,11 @@ class GTranslator{
         }else if($this->provider == self::SELECT){
             $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);return false;},Init:function(){GTranslator.GoogleScript();}};";
         }
-        $JSScript .= "(function(){GTranslator.Init()})();</script>";
+        $JSScript .= "(function(){GTranslator.Init();document.body.classList.add('php-google-translator');})();</script>";
         return  $JSScript;
     }
+
+    
 
     /**
      * Returns css style-sheet for design
