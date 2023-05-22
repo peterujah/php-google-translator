@@ -163,8 +163,12 @@ class GTranslator{
     */
     public function forceLanguage($key){
         echo '<script>
-        if(GTranslator.Current() != "'.$key.'"){
-            GTranslator.Translate(null, \'' . $this->siteLang . '|' . ($key??"en") . '\');
+        GTranslator.StatusSiteLang = (localStorage.getItem("siteLang")||"'.$this->siteLang.'");
+        GTranslator.StatusChangeLang = parseInt(localStorage.getItem("changeLang")||0);
+        if(GTranslator.StatusChangeLang == 0){
+            if(GTranslator.Current() != "'.$key.'" && GTranslator.StatusSiteLang != "'.$key.'"){
+                GTranslator.Translate(null, \'' . $this->siteLang . '|' . ($key??"en") . '\');
+            }
         }
         </script>';
         return $this;
@@ -350,7 +354,7 @@ class GTranslator{
      * @return string|html|javascript $JSScript
     */
     public function addScript(){
-        $JSScript = "<script>var GTranslator = {siteLang: \"{$this->siteLang}\",googleElement: \"{$this->element}\",OPTION_ACTIVE: !1,Languages: " . json_encode($this->languages) . ",GButton: function(){return document.getElementById('php-g-translator');},Current:function(){var b=document.cookie.match(\"(^|;) ?googtrans=([^;]*)(;|$)\");return b?b[2].split(\"/\")[2]:GTranslator.siteLang},Event:function(b,a){try{if(document.createEventObject){var c=document.createEventObject();b.fireEvent(\"on\"+a,c)}else c=document.createEvent(\"HTMLEvents\"),c.initEvent(a,!0,!0),b.dispatchEvent(c)}catch(d){console.log(\"GTranslator: \"+d)}},runTranslate:function(a,b){if(null!=GTranslator.Current()||lang!=a){for(var c,d=document.getElementsByTagName(\"select\"),e=0;e<d.length;e++)if(/goog-te-combo/.test(d[e].className)){c=d[e];break}null==document.getElementById(GTranslator.googleElement)||0==document.getElementById(GTranslator.googleElement).innerHTML.length||
+        $JSScript = "<script>var GTranslator = {siteLang: \"{$this->siteLang}\",googleElement: \"{$this->element}\",OPTION_ACTIVE: !1,Languages: " . json_encode($this->languages) . ",GButton: function(){return document.getElementById('php-g-translator');},Current:function(){var b=document.cookie.match(\"(^|;) ?googtrans=([^;]*)(;|$)\");return b?b[2].split(\"/\")[2]:GTranslator.siteLang},Event:function(b,a){try{if(document.createEventObject){var c=document.createEventObject();b.fireEvent(\"on\"+a,c)}else c=document.createEvent(\"HTMLEvents\"),c.initEvent(a,!0,!0),b.dispatchEvent(c)}catch(d){console.log(\"GTranslator: \"+d)}},runTranslate:function(a,b){if(null!=GTranslator.Current()||lang!=a){localStorage.setItem('siteLang', d);localStorage.setItem('changeLang', 1);for(var c,d=document.getElementsByTagName(\"select\"),e=0;e<d.length;e++)if(/goog-te-combo/.test(d[e].className)){c=d[e];break}null==document.getElementById(GTranslator.googleElement)||0==document.getElementById(GTranslator.googleElement).innerHTML.length||
         0==c.length||0==c.innerHTML.length?setTimeout(function(){GTranslator.runTranslate(a,b)},500):(c.value=b,GTranslator.Event(c,\"change\"))}},GoogleInit:function(){new google.translate.TranslateElement({pageLanguage:\"{$this->siteLang}\",autoDisplay:!1},GTranslator.googleElement)},GoogleScript:function(){var b=document.createElement(\"script\");b.async=!0;b.type=\"text/javascript\";b.src=\"https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit\";var a=document.getElementsByTagName(\"script\")[0];a.parentNode.insertBefore(b,a)},Translate:function(a,b){\"undefined\"!=typeof b&&
             b.value&&(b=b.value);if(!(\"\"==b||1>b.length)){var c=b.split(\"|\"),d=c[1];GTranslator.runTranslate(c[0],d);";
         if($this->provider == self::DEFAULT){
@@ -366,7 +370,7 @@ class GTranslator{
         }else if($this->provider == self::BOOTSTRAP){
             $JSScript .= "Init:function(){GTranslator.GoogleScript();null!=GTranslator.Current()&&document.querySelectorAll(\".drop-li\").forEach(function(a,b){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent)})}};";
         }else if($this->provider == self::SELECT){
-            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);return false;},Init:function(){GTranslator.GoogleScript();}};";
+            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);localStorage.setItem('siteLang', self.value);localStorage.setItem('changeLang', 1);return false;},Init:function(){GTranslator.GoogleScript();}};";
         }
         $JSScript .= "(function(){GTranslator.Init();document.body.classList.add('php-google-translator');})();</script>";
         return  $JSScript;
