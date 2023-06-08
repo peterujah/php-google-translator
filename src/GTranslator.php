@@ -58,21 +58,30 @@ class GTranslator{
 
     /**
      * Hold google translator element id name 
-     *
      * @var string
     */
     private $element = "google_translate_element2";
 
     /**
      * Hold additional link class name for language selector options
-     *
      * @var string
     */
     private $linkClass;
 
     /**
+     * Hold button boggle custom class  
+     * @var string
+    */
+    private  $toggleClass;
+
+    /**
+     * Hold button type 
+     * @var bool
+    */
+    private $jsTrigger = false;
+
+    /**
      * Hold additional css width value selector container element
-     *
      * @var string
     */
     private $selectWidth = "170px";
@@ -162,16 +171,8 @@ class GTranslator{
      * @return GTranslator $this
     */
     public function forceLanguage($key){
-        echo '<script>
-        GTranslator.StatusSiteLang = (localStorage.getItem("siteLang")||"'.$this->siteLang.'");
-        GTranslator.StatusChangeLang = parseInt(localStorage.getItem("changeLang")||0);
-        if(GTranslator.StatusChangeLang == 0){
-            if(GTranslator.Current() != "'.$key.'" && GTranslator.StatusSiteLang != "'.$key.'"){
-                GTranslator.Translate(null, \'' . $this->siteLang . '|' . ($key??"en") . '\');
-            }
-        }
-        </script>';
-        return $this;
+        echo '<script> GTranslator.forceLanguage("'.$key.'");</script>';
+       return $this;
     }
     
     /**
@@ -225,6 +226,12 @@ class GTranslator{
         return $this;
     }
 
+    public function setToggleClass($cls){
+        $this->toggleClass = $cls;
+        return $this;
+    }
+
+
     /**
      * Sets design style default or bootstrap
      * @param int $prv
@@ -238,7 +245,7 @@ class GTranslator{
     }
 
     /**
-     * Gets bootstrap attrbute name
+     * Gets bootstrap attribute name
      * @return String 
     */
     public function getBootstrapAttr(){
@@ -281,17 +288,28 @@ class GTranslator{
 
     /**
      * Builds selector design for default ui
+     * @param boolean $jsTrigger if the button is js
      * @return html|string $html
     */
-    private function selectorCustom(){
+    private function selectorCustom($jsTrigger = false){
+        $this->jsTrigger = $jsTrigger;
         $this->setLinkClass("selected-language-item");
-        $html =  '<div class="language-selector g-translator-custom">';
-        $html .= '<ul class="toggle-translator notranslate">';
+        if($jsTrigger){
+            $html =  '<div class="language-selector g-translator-custom g-custom-js">';
+            $html .= '<a class="open-language-selector" href="#">';
+            $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">';
+            $html .= '</a>';
+        }else{
+            $html =  '<div class="language-selector g-translator-custom">';
+        }
+        $html .= '<ul class="toggle-translator notranslate ' . $this->toggleClass . '">';
         $html .= '<li class="toggle-languages">';
-        $html .= '<a class="" href="#" id="php-g-translator">';
-        $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">' . $this->languages[$this->siteLang];
-        $html .= '<span class="toggle-cert"></span>';
-        $html .= '</a>';
+        if(!$jsTrigger){
+            $html .= '<a class="" href="#" id="php-g-translator">';
+            $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">' . $this->languages[$this->siteLang];
+            $html .= '<span class="toggle-cert"></span>';
+            $html .= '</a>';
+        }
         $html .= '<ul id="php-gt-languages" class="language-options" style="display:none;">';
         $html .=  $this->buildLinks(true);
         $html .=  '</ul>';
@@ -324,9 +342,21 @@ class GTranslator{
 
     /**
      * Returns computed selector based on provider
+     * @param string $width button width
+     * @param boolean $jsTrigger if the button is js
      * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
     */
-    public function button($width = "170px"){
+    public function button($width = "170px", $jsTrigger = false){
+        $this->jsButton(false, $width = "170px");
+    }
+
+    /**
+     * Returns computed button based on provider and js
+     * @param boolean $jsTrigger if the button is js
+     * @param string $width button width
+     * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
+    */
+    public function jsButton($jsTrigger = true, $width = "170px"){
         $this->selectWidth = $width;
         if(empty($this->languages)){
             trigger_error("Error: make sure you add languages first");
@@ -337,7 +367,7 @@ class GTranslator{
         }else if($this->provider == self::SELECT){
             echo $this->selectOptions();
         }else{
-            echo $this->selectorCustom();
+            echo $this->selectorCustom($jsTrigger);
         }
     }
 
@@ -353,29 +383,238 @@ class GTranslator{
      * Returns javascript and render google translator engine
      * @return string|html|javascript $JSScript
     */
-    public function addScript(){
-        $JSScript = "<script>var GTranslator = {siteLang: \"{$this->siteLang}\",googleElement: \"{$this->element}\",OPTION_ACTIVE: !1,Languages: " . json_encode($this->languages) . ",GButton: function(){return document.getElementById('php-g-translator');},Current:function(){var b=document.cookie.match(\"(^|;) ?googtrans=([^;]*)(;|$)\");return b?b[2].split(\"/\")[2]:GTranslator.siteLang},Event:function(b,a){try{if(document.createEventObject){var c=document.createEventObject();b.fireEvent(\"on\"+a,c)}else c=document.createEvent(\"HTMLEvents\"),c.initEvent(a,!0,!0),b.dispatchEvent(c)}catch(d){console.log(\"GTranslator: \"+d)}},runTranslate:function(a,b){if(null!=GTranslator.Current()||lang!=a){localStorage.setItem('siteLang', d);localStorage.setItem('changeLang', 1);for(var c,d=document.getElementsByTagName(\"select\"),e=0;e<d.length;e++)if(/goog-te-combo/.test(d[e].className)){c=d[e];break}null==document.getElementById(GTranslator.googleElement)||0==document.getElementById(GTranslator.googleElement).innerHTML.length||
-        0==c.length||0==c.innerHTML.length?setTimeout(function(){GTranslator.runTranslate(a,b)},500):(c.value=b,GTranslator.Event(c,\"change\"))}},GoogleInit:function(){new google.translate.TranslateElement({pageLanguage:\"{$this->siteLang}\",autoDisplay:!1},GTranslator.googleElement)},GoogleScript:function(){var b=document.createElement(\"script\");b.async=!0;b.type=\"text/javascript\";b.src=\"https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit\";var a=document.getElementsByTagName(\"script\")[0];a.parentNode.insertBefore(b,a)},Translate:function(a,b){\"undefined\"!=typeof b&&
-            b.value&&(b=b.value);if(!(\"\"==b||1>b.length)){var c=b.split(\"|\"),d=c[1];GTranslator.runTranslate(c[0],d);";
-        if($this->provider == self::DEFAULT){
-            $JSScript .= "GTranslator.GButton().innerHTML='<img alt=\"'+d+'\" src=\"{$this->iconPath}'+d+'{$this->iconType}\"> '+GTranslator.Languages[d]+'<span class=\"toggle-cert\"></span>'}},";
-        }else if($this->provider == self::BOOTSTRAP){
-            $JSScript .= "GTranslator.GButton().innerHTML='<img alt=\"'+d+'\" src=\"{$this->iconPath}'+d+'{$this->iconType}\"> '+GTranslator.Languages[d]}},";
-        }
-        if($this->provider == self::DEFAULT){
-            $JSScript .= "toggle:function(){var b=document.getElementById(\"php-gt-languages\");\"none\"===b.style.display?(b.style.display=\"block\",setTimeout(function(){GTranslator.OPTION_ACTIVE=!0},500)):(b.style.display=\"none\",GTranslator.OPTION_ACTIVE=!1)},toggleClass:function(){GTranslator.GButton().classList.toggle(\"open\")},
-                Init:function(){GTranslator.GoogleScript();var b=document.getElementById(\"php-gt-languages\");document.getElementsByClassName(\"toggle-languages\")[0].onclick=
-                function(a){a.preventDefault();GTranslator.toggle();GTranslator.toggleClass()};b.addEventListener(\"wheel\",function(a){\"block\"===window.getComputedStyle(b).display&&b.scrollTo({top:b.scrollTop-(a.wheelDelta||-a.detail)});return!1});document.querySelectorAll(\"body\").forEach(function(a,c){a.addEventListener(\"click\",function(d){\"block\"===window.getComputedStyle(b).display&&GTranslator.OPTION_ACTIVE&&(GTranslator.toggle(),GTranslator.toggleClass())})});null!=GTranslator.Current()&&
-                document.querySelectorAll(\".drop-li\").forEach(function(a,c){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent+'<span class=\"toggle-cert\"></span>')})}};";
-        }else if($this->provider == self::BOOTSTRAP){
-            $JSScript .= "Init:function(){GTranslator.GoogleScript();null!=GTranslator.Current()&&document.querySelectorAll(\".drop-li\").forEach(function(a,b){GTranslator.Current()==a.firstChild.getAttribute(\"lang\")&&(GTranslator.GButton().innerHTML='<img alt=\"'+GTranslator.Current()+'\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> '+a.firstChild.textContent)})}};";
-        }else if($this->provider == self::SELECT){
-            $JSScript .= "}},trigger: function(self){GTranslator.Translate(null, '{$this->siteLang}|' + self.value);localStorage.setItem('siteLang', self.value);localStorage.setItem('changeLang', 1);return false;},Init:function(){GTranslator.GoogleScript();if(null!=GTranslator.Current()){document.getElementsByClassName('php-language-select').value=GTranslator.Current();}}};";
-        }
-        $JSScript .= "(function(){GTranslator.Init();document.body.classList.add('php-google-translator');})();</script>";
-        return  $JSScript;
-    }
 
+    public function addScript(){  
+        $JSScript = "<script>var GTranslator = GTranslator || {
+            siteLang: \"{$this->siteLang}\",
+            googleElement: \"{$this->element}\",
+            OPTION_ACTIVE: false,
+            Languages: " . json_encode($this->languages) . ",
+
+            forceLanguage: function(key){
+                GTranslator.StatusSiteLang = (localStorage.getItem('siteLang')||'{$this->siteLang}');
+                GTranslator.StatusChangeLang = parseInt(localStorage.getItem('changeLang')||0);
+                if(GTranslator.StatusChangeLang == 0){
+                    if(GTranslator.Current() != key && GTranslator.StatusSiteLang != key){
+                        GTranslator.Translate(null, '{$this->siteLang}|' + (key||'en'));
+                    }
+                }
+            },
+            
+            openClose: function(){
+                GTranslator.toggle();
+                GTranslator.toggleClass();
+            },
+
+            GButton: function(){
+                return document.getElementById('php-g-translator');
+            },
+
+            Current: function() {
+                var keyValue = document['cookie'].match('(^|;) ?googtrans=([^;]*)(;|$)'); return keyValue ? keyValue[2].split('/')[2] : GTranslator.siteLang;
+            },
+            
+            Event: function(element,event){
+                try{
+                    if(document.createEventObject){
+                        var evt=document.createEventObject();element.fireEvent('on'+event,evt)
+                    }else{
+                        var evt=document.createEvent('HTMLEvents');
+                        evt.initEvent(event,true,true);
+                        element.dispatchEvent(evt);
+                    }
+                }catch(e){
+                    console.log('GTranslator: ' + e);
+                }
+            },
+
+            GoogleInit: function() {
+                new google.translate.TranslateElement({pageLanguage: \"{$this->siteLang}\", autoDisplay: false}, GTranslator.googleElement);
+            },
+        
+            GoogleScript: function(){
+                var s1=document.createElement('script');
+                s1.async=true;
+                s1.type = 'text/javascript';
+                s1.src='https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit';
+                var s0 = document.getElementsByTagName('script')[0];
+                s0.parentNode.insertBefore(s1, s0);
+            },
+            
+            runTranslate: function(from, to) {
+                        
+                if (GTranslator.Current() == null && lang == from){
+                    return;
+                }
+                localStorage.setItem('siteLang', to);localStorage.setItem('changeLang', 1);
+                var teCombo;
+                var sel = document.getElementsByTagName('select');
+                for (var i = 0; i < sel.length; i++){
+                    if (/goog-te-combo/.test(sel[i].className)) {
+                        teCombo = sel[i];
+                        break;
+                    } 
+                }
+        
+                if (document.getElementById(GTranslator.googleElement) == null || document.getElementById(GTranslator.googleElement).innerHTML.length == 0 || teCombo.length == 0 || teCombo.innerHTML.length == 0) {
+                    setTimeout(function() {
+                        GTranslator.runTranslate(from, to)
+                    }, 500)
+                } else {
+                    teCombo.value = to;
+                    GTranslator.Event(teCombo, 'change');
+                }
+            },
+            
+            Translate: function(self, lang_pair) {
+                if (typeof lang_pair != 'undefined'){
+                    if(lang_pair.value){
+                        lang_pair = lang_pair.value;
+                    }
+                }
+        
+                if (lang_pair == '' || lang_pair.length < 1){ 
+                    return;
+                }
+        
+                var langs = lang_pair.split('|');
+                var from = langs[0];
+                var lang = langs[1];
+                GTranslator.runTranslate(from, lang);
+                var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                if(canRun){
+                    var langImage  = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + lang + '{$this->iconType}\">';
+                ";
+                if($this->provider == self::DEFAULT){
+                    if($this->jsTrigger){
+                        $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
+                    }else{
+                        $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[lang] + '<span class=\"toggle-cert\"></span>';";
+                    }
+                }else if($this->provider == self::BOOTSTRAP){
+                    $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[lang];";
+                }
+            $JSScript .= "}
+            },";
+        
+            if($this->provider == self::DEFAULT){
+                $JSScript .= "
+                    toggle: function() {
+                        var x = document.getElementById('php-gt-languages');
+                        if (x.style.display === 'none') {
+                            x.style.display = 'block';
+                            setTimeout(function(){
+                            GTranslator.OPTION_ACTIVE = true;
+                            }, 500);
+                        } else {
+                            x.style.display = 'none';
+                            GTranslator.OPTION_ACTIVE = false;
+                        }
+                    },
+                
+                    toggleClass: function() {
+                        if(GTranslator.GButton() != null){
+                            GTranslator.GButton().classList.toggle('open');
+                        }
+                    },
+                
+                    Init: function(){
+
+                        GTranslator.GoogleScript(); 
+                        if(typeof document.getElementsByClassName('toggle-languages')[0] != 'undefined'){
+                            document.getElementsByClassName('toggle-languages')[0].onclick = function(event) {
+                                event.preventDefault();
+                                GTranslator.openClose()
+                            };
+                        }
+                        if(typeof document.getElementsByClassName('open-language-selector')[0] != 'undefined'){
+                            document.getElementsByClassName('open-language-selector')[0].onclick = function(event) {
+                                event.preventDefault();
+                                GTranslator.openClose();
+                            };
+                        }
+
+                        if(wheel = document.getElementById('php-gt-languages')){
+                
+                            wheel.addEventListener('wheel', function(event){
+                                if (window.getComputedStyle(wheel).display === 'block') {
+                                    wheel.scrollTo({
+                                        top: wheel.scrollTop - (event.wheelDelta || -event.detail)
+                                    });
+                                }
+                                return false;
+                            });
+                
+                            document.querySelectorAll('body').forEach(function(ele, i){
+                                ele.addEventListener('click', function(event){
+                                    if(window.getComputedStyle(wheel).display === 'block' && GTranslator.OPTION_ACTIVE){
+                                        console.log('Is Open');
+                                        GTranslator.toggle();
+                                        GTranslator.toggleClass();
+                                    }
+                                });
+                            });
+                         }
+                        var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                        if(canRun && GTranslator.Current() != null){
+                            document.querySelectorAll('.drop-li').forEach(function(ele, i){
+                                 if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
+                                    var langImage  = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\">';
+                                    ";
+                                    if($this->jsTrigger){
+                                        $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
+                                    }else{
+                                        $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';";
+                                    }
+                                    $JSScript .= "
+                                 }
+                            });
+                        }
+                   }
+                };";
+            }else if($this->provider == self::BOOTSTRAP){
+                $JSScript .= "
+                    Init: function(){
+                        GTranslator.GoogleScript();
+                        if(GTranslator.Current() != null){
+                            document.querySelectorAll('.drop-li').forEach(function(ele, i){
+                                if(GTranslator.GButton() != null && GTranslator.Current() == ele.firstChild.getAttribute('lang')){
+                                    GTranslator.GButton().innerHTML = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\"> ' + ele.firstChild.textContent;
+                                }
+                            });
+                        }
+                    }
+                };";
+            }else if($this->provider == self::SELECT){
+                $JSScript .= "}},
+                    trigger: function(self){
+                        GTranslator.Translate(null, '{$this->siteLang}|' + self.value);
+                        localStorage.setItem('siteLang', self.value);
+                        localStorage.setItem('changeLang', 1);
+                        return false;
+                    },
+                    Init:function(){
+                        GTranslator.GoogleScript();
+                        if(null!=GTranslator.Current()){
+                            var formObj = document.getElementsByClassName('php-language-select');
+                            for(let i = 0, len = formObj.length; i < len; i++){
+                                if(formObj[i].value == GTranslator.Current()){
+                                    formObj.options[i].selected = true;
+                                }
+                            }
+                        }
+                    }
+                };";
+            }
+
+            $JSScript .= "
+                (function(){
+                    GTranslator.Init();
+                    document.body.classList.add('php-google-translator');
+                })();
+            </script>";
+        return $JSScript;
+    }
     
 
     /**
@@ -385,7 +624,7 @@ class GTranslator{
     private function addCss(){
         $styleSheet = " <style> body{top:0 !important} .skiptranslate, #{$this->element}, #goog-gt-tt{display:none !important} .goog-te-banner-frame{display:none !important} .goog-te-menu-value:hover{text-decoration:none !important} .goog-text-highlight{background-color:transparent !important;box-shadow:none !important} #php-g-translator img{height:16px;width:16px}";
         if($this->provider == self::DEFAULT){
-            $styleSheet .= ".g-translator-custom{position: relative} .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} .g-translator-custom a:hover img{opacity:1} .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} .g-translator-custom .language-options::-webkit-scrollbar{width:5px} .g-translator-custom .language-options::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888} .g-translator-custom #php-g-translator img{margin-right:2px} ";
+            $styleSheet .= ".open-language-selector, .g-custom-js{display: inline-block;width:16px;height:16px;}.g-translator-custom:not(.g-custom-js){position: relative} .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} .g-translator-custom a:hover img{opacity:1} .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} .g-translator-custom .language-options::-webkit-scrollbar{width:5px} .g-translator-custom .language-options::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888} .g-translator-custom #php-g-translator img{margin-right:2px} ";
         }
         if($this->provider == self::SELECT){
             $styleSheet .= ".select-language-item{padding: 6px 12px;}";
