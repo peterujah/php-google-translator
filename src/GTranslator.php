@@ -445,7 +445,6 @@ class GTranslator{
                     layout: google.translate.TranslateElement.InlineLayout.VERTICAL,
                     autoDisplay: false,
                     additionalOption: {
-                        disableAutoTranslation: true,
                         disablePoweredBy: true
                     }
                 }, GTranslator.googleElement);
@@ -453,11 +452,10 @@ class GTranslator{
         
             GoogleScript: function(){
                 var s1 = document.createElement('script');
-                s1.async = true;
-                s1.defer = true;
+                //s1.async = true;
+                //s1.defer = true;
                 s1.type = 'text/javascript';
                 s1.src='https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit';
-                /*var s0 = document.getElementsByTagName('script')[0];*/
                 var s0 = document.getElementById('php-g-translator-plugin');
                 s0.parentNode.insertBefore(s1, s0);
             },
@@ -646,14 +644,14 @@ class GTranslator{
      * @return string|html|css $styleSheet
     */
     private function addCss(){
-        $styleSheet = " <style>body.php-google-translator{top:0 !important}.skiptranslate, #{$this->element}, #goog-gt-tt, .goog-te-banner-frame{display:none !important}#php-g-translator img{height:16px;width:16px}";
+        $styleSheet = " <style>body.php-google-translator{top:0 !important}.skiptranslate,.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,div[class^='VIpgJd-ZVi9od-aZ2wEe-wOHMyf-'],#{$this->element}, #goog-gt-tt, .goog-te-banner-frame{display:none !important}#php-g-translator img{height:16px;width:16px}";
         if($this->provider == self::DEFAULT){
             $styleSheet .= ".open-language-selector, .g-custom-js{display: inline-block;width:16px;height:16px;}
             .g-translator-custom:not(.g-custom-js){position: relative} 
             .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} 
             .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} 
             .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} 
-            .g-translator-custom a:hover img{opacity:1}
+            .g-translator-custom a:hover img{opacity:1} 
             .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} 
             .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} 
             .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} 
