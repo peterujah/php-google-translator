@@ -187,6 +187,15 @@ class GTranslator{
     }
 
     /**
+     * get default languages
+     * @return string en,us,etc
+    */
+    public function getLanguageKeys(){
+        $jsKeys = array_keys($this->languages);
+        return implode(',', $jsKeys);
+    }
+
+    /**
      * Sets google element id name
      * @param string $ele 
      * @return GTranslator $this
@@ -328,8 +337,8 @@ class GTranslator{
         $this->setLinkClass("dropdown-item");
         $html =  '<div class="language-selector">';
         $html .= '<div class="dropdown notranslate">';
-        $html .= '<button class="btn btn-outline-gold dropdown-toggle" type="button" id="php-g-translator" data-' . $this->getBootstrapAttr() . 'toggle="dropdown" aria-expanded="false">';
-        $html .= '<img alt="' . $this->siteLang . '" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '"> ' . $this->languages[$this->siteLang];
+        $html .= '<button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="php-g-translator" data-' . $this->getBootstrapAttr() . 'toggle="dropdown" aria-expanded="false">';
+        $html .= '<img alt="' . $this->siteLang . '" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '"> ' . ($this->languages[$this->siteLang]??$this->siteLang);
         $html .= '</button>';
         $html .= ' <ul id="php-gt-languages" class="dropdown-menu" aria-labelledby="php-g-translator">';
         $html .=  $this->buildLinks(true);
@@ -385,7 +394,7 @@ class GTranslator{
     */
 
     public function addScript(){  
-        $JSScript = "<script>var GTranslator = GTranslator || {
+        $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = GTranslator || {
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
             OPTION_ACTIVE: false,
@@ -429,15 +438,27 @@ class GTranslator{
             },
 
             GoogleInit: function() {
-                new google.translate.TranslateElement({pageLanguage: \"{$this->siteLang}\", autoDisplay: false}, GTranslator.googleElement);
+                var langKeys = Object.keys(GTranslator.Languages);
+                new google.translate.TranslateElement({
+                    pageLanguage: \"{$this->siteLang}\", 
+                    includedLanguages: '\"' + langKeys.join(',') + '\"',
+                    layout: google.translate.TranslateElement.InlineLayout.VERTICAL,
+                    autoDisplay: false,
+                    additionalOption: {
+                        disableAutoTranslation: true,
+                        disablePoweredBy: true
+                    }
+                }, GTranslator.googleElement);
             },
         
             GoogleScript: function(){
-                var s1=document.createElement('script');
-                s1.async=true;
+                var s1 = document.createElement('script');
+                s1.async = true;
+                s1.defer = true;
                 s1.type = 'text/javascript';
                 s1.src='https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit';
-                var s0 = document.getElementsByTagName('script')[0];
+                /*var s0 = document.getElementsByTagName('script')[0];*/
+                var s0 = document.getElementById('php-g-translator-plugin');
                 s0.parentNode.insertBefore(s1, s0);
             },
             
@@ -446,7 +467,8 @@ class GTranslator{
                 if (GTranslator.Current() == null && lang == from){
                     return;
                 }
-                localStorage.setItem('siteLang', to);localStorage.setItem('changeLang', 1);
+                localStorage.setItem('siteLang', to);
+                localStorage.setItem('changeLang', 1);
                 var teCombo;
                 var sel = document.getElementsByTagName('select');
                 for (var i = 0; i < sel.length; i++){
@@ -570,7 +592,7 @@ class GTranslator{
                                  }
                             });
                         }
-                   }
+                    }
                 };";
             }else if($this->provider == self::BOOTSTRAP){
                 $JSScript .= "
@@ -609,8 +631,10 @@ class GTranslator{
 
             $JSScript .= "
                 (function(){
-                    GTranslator.Init();
-                    document.body.classList.add('php-google-translator');
+                    window.onload = function() {
+                        GTranslator.Init();
+                        document.body.classList.add('php-google-translator');
+                    };
                 })();
             </script>";
         return $JSScript;
@@ -622,13 +646,31 @@ class GTranslator{
      * @return string|html|css $styleSheet
     */
     private function addCss(){
-        $styleSheet = " <style> body{top:0 !important} .skiptranslate, #{$this->element}, #goog-gt-tt{display:none !important} .goog-te-banner-frame{display:none !important} .goog-te-menu-value:hover{text-decoration:none !important} .goog-text-highlight{background-color:transparent !important;box-shadow:none !important} #php-g-translator img{height:16px;width:16px}";
+        $styleSheet = " <style>body.php-google-translator{top:0 !important}.skiptranslate, #{$this->element}, #goog-gt-tt, .goog-te-banner-frame{display:none !important}#php-g-translator img{height:16px;width:16px}";
         if($this->provider == self::DEFAULT){
-            $styleSheet .= ".open-language-selector, .g-custom-js{display: inline-block;width:16px;height:16px;}.g-translator-custom:not(.g-custom-js){position: relative} .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} .g-translator-custom a:hover img{opacity:1} .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} .g-translator-custom .language-options::-webkit-scrollbar{width:5px} .g-translator-custom .language-options::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888} .g-translator-custom #php-g-translator img{margin-right:2px} ";
+            $styleSheet .= ".open-language-selector, .g-custom-js{display: inline-block;width:16px;height:16px;}
+            .g-translator-custom:not(.g-custom-js){position: relative} 
+            .g-translator-custom .toggle-translator{font-family:Arial;font-size:10pt;text-align:left;cursor:pointer;overflow:hidden;width:{$this->selectWidth};line-height:17px;position: absolute;right: 0;list-style-type: none;padding-left: 0px} 
+            .g-translator-custom a{text-decoration:none;display:block;font-size:10pt;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box} 
+            .g-translator-custom a img{vertical-align:middle;display:inline;border:0;padding:0;margin:0;opacity:0.8} 
+            .g-translator-custom a:hover img{opacity:1}
+            .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} 
+            .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} 
+            .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} 
+            .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} 
+            .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} 
+            .g-translator-custom .language-options::-webkit-scrollbar{width:5px} 
+            .g-translator-custom .language-options::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);background-color:#888} 
+            .g-translator-custom #php-g-translator img{margin-right:2px}";
         }
         if($this->provider == self::SELECT){
             $styleSheet .= ".select-language-item{padding: 6px 12px;}";
         }
+
+        if($this->provider == self::BOOTSTRAP){
+            $styleSheet .= ".dropdown-menu{max-height: 300px;overflow: auto;}";
+        }
+        
         $styleSheet .= "</style>";
         return $styleSheet;
     }
