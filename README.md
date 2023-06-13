@@ -16,9 +16,16 @@ composer require peterujah/php-google-translator
 
 # USAGES
 
+Initalize with page languages
 ```php 
 use Peterujah\NanoBlock\GTranslator;
-$translate = new GTranslator("en", "/assets/flags/");
+$translate = new GTranslator(substr(($_SERVER['HTTP_ACCEPT_LANGUAGE']??"en"), 0, 2), "/assets/flags/");
+```
+
+Or with icon path
+```php 
+use Peterujah\NanoBlock\GTranslator;
+$translate = new GTranslator(substr(($_SERVER['HTTP_ACCEPT_LANGUAGE']??"en"), 0, 2));
 ```
 
 set selector design provider, you can choose between `DEFAULT`, `SELECT` or `BOOTSTRAP.`
@@ -27,19 +34,24 @@ The `DEFAULT` is the default provider
 $translate->setProvider(GTranslator::DEFAULT || GTranslator::SELECT || GTranslator::BOOTSTRAP);
 ```
 
-Set the fag icon type, `PNG` or `SVG` to use icons download country flag icon and set the Relative or Absolute path
+Set languages icon path and icon type `GTranslator::PNG || GTranslator::SVG`.
+`PNG` or `SVG` to use icons download country language flag icon and set the Relative or Absolute path
 
 ```php
-$translate->setIconType(GTranslator::PNG || GTranslator::SVG);
-$translate->setIconPath("https://foo.com/assets/flags/");
+$translate->setIconPath("https://foo.com/assets/flags/", GTranslator::PNG);
  ```
- Add additional langues
+Or set individually by first setting path and then type to override the default type
+
+```php
+$translate->setIconPath("/assets/flags/")->setIconType(GTranslator::PNG);
+ ```
  
+ Adding additional language to translator
  ```php
  $translate->addLanguage("en", "English")->addLanguage("ig", "Igbo");
  ```
  
- Load languages 
+ Or load your languages to override the default 
  
  ```php
  $translate->setLanguages([
@@ -58,6 +70,11 @@ $translate->setIconPath("https://foo.com/assets/flags/");
  $translate->button();
  ```
  
+  To use image button, your provider must be `GTranslator::DEFAULT`
+  ```php 
+ $translate->imageButton();
+ ```
+ 
  Load supportes javascript plugin
  ```php 
  $translate->load();
@@ -65,7 +82,7 @@ $translate->setIconPath("https://foo.com/assets/flags/");
  
   Force translate page once pages is loaded, this must be called after `$translate->load();`
  ```php 
- $translate->forceLanguage("ms");
+$translate->forceLanguage("ms");
  ```
  
  Full usage on website to translate webpage
@@ -94,7 +111,7 @@ $translate->setIconPath("https://foo.com/assets/flags/");
           We believe in banking locally and hope you will too. 
         </p>
       </div>
-      <?php $translate->load();$translate->forceLanguage("jp");?>
+      <?php $translate->load();$translate->forceLanguage($translate->siteLang);?>
   </body>
 </html>
 ```
