@@ -75,10 +75,10 @@ class GTranslator{
     private  $toggleClass;
 
     /**
-     * Hold button type 
+     * Hold bool to check if toggle button is a flag image only 
      * @var bool
     */
-    private $jsTrigger = false;
+    private $imageTrigger = false;
 
     /**
      * Hold additional css width value selector container element
@@ -223,7 +223,8 @@ class GTranslator{
      * @param string $path 
      * @return GTranslator $this
     */
-    public function setIconPath($path){
+    public function setIconPath($path, $ext = self::PNG){
+        $this->iconType = $ext;
         $this->iconPath = $path;
         return $this;
     }
@@ -300,13 +301,13 @@ class GTranslator{
 
     /**
      * Builds selector design for default ui
-     * @param boolean $jsTrigger if the button is js
+     * @param boolean $imageTrigger if the button is js
      * @return html|string $html
     */
-    private function selectorCustom($jsTrigger = false){
-        $this->jsTrigger = $jsTrigger;
+    private function selectorCustom($imageTrigger = false){
+        $this->imageTrigger = $imageTrigger;
         $this->setLinkClass("selected-language-item");
-        if($jsTrigger){
+        if($imageTrigger){
             $html =  '<div class="language-selector g-translator-custom g-custom-js">';
             $html .= '<a class="open-language-selector" href="#">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">';
@@ -316,7 +317,7 @@ class GTranslator{
         }
         $html .= '<ul class="toggle-translator notranslate ' . $this->toggleClass . '">';
         $html .= '<li class="toggle-languages">';
-        if(!$jsTrigger){
+        if(!$imageTrigger){
             $html .= '<a class="" href="#" id="php-g-translator">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">' . $this->languages[$this->siteLang];
             $html .= '<span class="toggle-cert"></span>';
@@ -355,20 +356,20 @@ class GTranslator{
     /**
      * Returns computed selector based on provider
      * @param string $width button width
-     * @param boolean $jsTrigger if the button is js
+     * @param boolean $imageTrigger if the button is js
      * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
     */
-    public function button($width = "170px", $jsTrigger = false){
-        $this->jsButton(false, $width = "170px");
+    public function button($width = "170px", $imageTrigger = false){
+        $this->imageButton(false, $width = "170px");
     }
 
     /**
      * Returns computed button based on provider and js
-     * @param boolean $jsTrigger if the button is js
+     * @param boolean $imageTrigger if the button is js
      * @param string $width button width
      * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
     */
-    public function jsButton($jsTrigger = true, $width = "170px"){
+    public function imageButton($imageTrigger = true, $width = "170px"){
         $this->selectWidth = $width;
         if(empty($this->languages)){
             trigger_error("Error: make sure you add languages first");
@@ -379,7 +380,7 @@ class GTranslator{
         }else if($this->provider == self::SELECT){
             echo $this->selectOptions();
         }else{
-            echo $this->selectorCustom($jsTrigger);
+            echo $this->selectorCustom($imageTrigger);
         }
     }
 
@@ -400,7 +401,6 @@ class GTranslator{
         $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = GTranslator || {
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
-            OPTION_ACTIVE: false,
             Languages: " . json_encode($this->getLanguages()) . ",
 
             forceLanguage: function(key){
@@ -504,12 +504,12 @@ class GTranslator{
                 var from = langs[0];
                 var lang = langs[1];
                 GTranslator.runTranslate(from, lang);
-                var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                var canRun = ". ( $this->imageTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
                 if(canRun){
                     var langImage  = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + lang + '{$this->iconType}\">';
                 ";
                 if($this->provider == self::DEFAULT){
-                    if($this->jsTrigger){
+                    if($this->imageTrigger){
                         $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
                     }else{
                         $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[lang] + '<span class=\"toggle-cert\"></span>';";
@@ -522,16 +522,17 @@ class GTranslator{
         
             if($this->provider == self::DEFAULT){
                 $JSScript .= "
+                    isOptionActive: false,
                     toggle: function() {
                         var x = document.getElementById('php-gt-languages');
                         if (x.style.display === 'none') {
                             x.style.display = 'block';
                             setTimeout(function(){
-                            GTranslator.OPTION_ACTIVE = true;
+                                GTranslator.isOptionActive = true;
                             }, 500);
                         } else {
                             x.style.display = 'none';
-                            GTranslator.OPTION_ACTIVE = false;
+                            GTranslator.isOptionActive = false;
                         }
                     },
                 
@@ -570,7 +571,7 @@ class GTranslator{
                 
                             document.querySelectorAll('body').forEach(function(ele, i){
                                 ele.addEventListener('click', function(event){
-                                    if(window.getComputedStyle(wheel).display === 'block' && GTranslator.OPTION_ACTIVE){
+                                    if(window.getComputedStyle(wheel).display === 'block' && GTranslator.isOptionActive){
                                         console.log('Is Open');
                                         GTranslator.toggle();
                                         GTranslator.toggleClass();
@@ -578,13 +579,13 @@ class GTranslator{
                                 });
                             });
                          }
-                        var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                        var canRun = ". ( $this->imageTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
                         if(canRun && GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
                                  if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
                                     var langImage  = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\">';
                                     ";
-                                    if($this->jsTrigger){
+                                    if($this->imageTrigger){
                                         $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
                                     }else{
                                         $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';";
@@ -609,7 +610,7 @@ class GTranslator{
                     }
                 };";
             }else if($this->provider == self::SELECT){
-                $JSScript .= "}},
+                $JSScript .= "
                     trigger: function(self){
                         GTranslator.Translate(null, '{$this->siteLang}|' + self.value);
                         localStorage.setItem('siteLang', self.value);
