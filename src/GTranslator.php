@@ -187,12 +187,15 @@ class GTranslator{
     }
 
     /**
-     * get default languages
-     * @return string en,us,etc
+     * Gets default languages sort accordingly and add english if not available
+     * @return array 
     */
-    public function getLanguageKeys(){
-        $jsKeys = array_keys($this->languages);
-        return implode(',', $jsKeys);
+    public function getLanguages(){
+        $english = ($this->languages["en"]??"English");
+        unset($this->languages["en"]);
+        $this->languages["en"] = $english;
+        asort($this->languages);
+        return $this->languages;
     }
 
     /**
@@ -268,7 +271,7 @@ class GTranslator{
     */
     private function buildLinks($li = false){
         $links = "";
-        foreach($this->languages as $key => $value){
+        foreach($this->getLanguages() as $key => $value){
             if($li){
                 $links .= '<li class="drop-li">';
             }
@@ -287,7 +290,7 @@ class GTranslator{
     private function selectOptions(){
         $this->setLinkClass("select-language-item");
         $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select ' . $this->linkClass . '">';
-        foreach($this->languages as $key => $value){
+        foreach($this->getLanguages() as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
         $links .= '</select>';
@@ -398,7 +401,7 @@ class GTranslator{
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
             OPTION_ACTIVE: false,
-            Languages: " . json_encode($this->languages) . ",
+            Languages: " . json_encode($this->getLanguages()) . ",
 
             forceLanguage: function(key){
                 GTranslator.StatusSiteLang = (localStorage.getItem('siteLang')||'{$this->siteLang}');
@@ -442,8 +445,8 @@ class GTranslator{
                 new google.translate.TranslateElement({
                     pageLanguage: \"{$this->siteLang}\", 
                     includedLanguages: '\"' + langKeys.join(',') + '\"',
-                    layout: google.translate.TranslateElement.InlineLayout.VERTICAL,
                     autoDisplay: false,
+                    layout: google.translate.TranslateElement.InlineLayout.VERTICAL,
                     additionalOption: {
                         disablePoweredBy: true
                     }
@@ -452,8 +455,8 @@ class GTranslator{
         
             GoogleScript: function(){
                 var s1 = document.createElement('script');
-                //s1.async = true;
-                //s1.defer = true;
+                s1.async = true;
+                s1.defer = true;
                 s1.type = 'text/javascript';
                 s1.src='https://translate.google.com/translate_a/element.js?cb=GTranslator.GoogleInit';
                 var s0 = document.getElementById('php-g-translator-plugin');
