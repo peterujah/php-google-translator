@@ -620,12 +620,8 @@ class GTranslator{
                     Init:function(){
                         GTranslator.GoogleScript();
                         if(null!=GTranslator.Current()){
-                            var formObj = document.getElementsByClassName('php-language-select');
-                            for(let i = 0, len = formObj.length; i < len; i++){
-                                if(formObj[i].value == GTranslator.Current()){
-                                    formObj.options[i].selected = true;
-                                }
-                            }
+                            var selectElement = document.getElementsByClassName('php-language-select')[0];
+                            selectElement.value = GTranslator.Current();
                         }
                     }
                 };";
