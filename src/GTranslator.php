@@ -406,7 +406,7 @@ class GTranslator{
             forceLanguage: function(key){
                 GTranslator.StatusSiteLang = (localStorage.getItem('siteLang')||'{$this->siteLang}');
                 GTranslator.StatusChangeLang = parseInt(localStorage.getItem('changeLang')||0);
-                if(GTranslator.StatusChangeLang == 0){
+                if(GTranslator.StatusChangeLang == 0 || (GTranslator.StatusChangeLang == 1 && GTranslator.StatusSiteLang == key)){
                     if(GTranslator.Current() != key && GTranslator.StatusSiteLang != key){
                         GTranslator.Translate(null, '{$this->siteLang}|' + (key||'en'));
                     }
