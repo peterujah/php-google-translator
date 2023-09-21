@@ -22,10 +22,10 @@ use Peterujah\NanoBlock\GTranslator;
 $translate = new GTranslator("en", "/assets/flags/");
 ```
 
-Or with icon path
+Or without icon path
 ```php 
 use Peterujah\NanoBlock\GTranslator;
-$translate = new GTranslator("en", 0, 2));
+$translate = new GTranslator("en");
 ```
 
 set selector design provider, you can choose between `DEFAULT`, `SELECT` or `BOOTSTRAP.`
