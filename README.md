@@ -19,7 +19,7 @@ composer require peterujah/php-google-translator
 Initalize with page languages
 ```php 
 use Peterujah\NanoBlock\GTranslator;
-$translate = new GTranslator(substr(($_SERVER['HTTP_ACCEPT_LANGUAGE']??"en"), 0, 2), "/assets/flags/");
+$translate = new GTranslator("en", "/assets/flags/");
 ```
 
 Or with icon path
