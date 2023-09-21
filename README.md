@@ -25,7 +25,7 @@ $translate = new GTranslator("en", "/assets/flags/");
 Or with icon path
 ```php 
 use Peterujah\NanoBlock\GTranslator;
-$translate = new GTranslator(substr(($_SERVER['HTTP_ACCEPT_LANGUAGE']??"en"), 0, 2));
+$translate = new GTranslator("en", 0, 2));
 ```
 
 set selector design provider, you can choose between `DEFAULT`, `SELECT` or `BOOTSTRAP.`
