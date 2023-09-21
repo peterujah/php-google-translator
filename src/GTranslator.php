@@ -60,73 +60,73 @@ class GTranslator{
      * Hold google translator element id name 
      * @var string
     */
-    private $element = "google_translate_element2";
+    private string $element = "google_translate_element2";
 
     /**
      * Hold additional link class name for language selector options
      * @var string
     */
-    private $linkClass;
+    private string $linkClass;
 
     /**
      * Hold button boggle custom class  
      * @var string
     */
-    private  $toggleClass;
+    private string $toggleClass;
 
     /**
-     * Hold bool to check if toggle button is a flag image only 
+     * Hold button type 
      * @var bool
     */
-    private $imageTrigger = false;
+    private bool $jsTrigger = false;
 
     /**
      * Hold additional css width value selector container element
      * @var string
     */
-    private $selectWidth = "170px";
+    private string $selectWidth = "170px";
 
     /**
      * Hold initial site language
      *
      * @var string
     */
-    public $siteLang = "en";
+    public string $siteLang = "en";
 
     /**
      * Hold path to country flag icons directory
      *
      * @var string
     */
-    private $iconPath;
+    private string $iconPath;
 
     /**
      * Hold selected icon type
      *
      * @var string
     */
-    private $iconType;
+    private string $iconType;
     
      /**
      * Hold ui design provider type
      *
      * @var int
     */
-    private $provider;
+    private int $provider;
 
     /**
      * Hold bootstrap design provider version
      *
      * @var string
     */
-    private $bootstrapVersion;
+    private string $bootstrapVersion;
 
     /**
      * Hold list of languages to  build
      *
      * @var array
     */
-    private $languages = array(
+    private array $languages = [
         "en" => "English",
         "ar" => "Arabic",
         "fr" => "French",
@@ -141,14 +141,14 @@ class GTranslator{
         "id" => "Indonesian",
         "ja" => "Japanese",
         "ko" => "Korean"
-    );
+    ];
   
     /**
      * Constructor.
      * @param string  $lang set initial site language
      * @param string $dir set initial icon directory
     */
-    public function __construct($lang = "en", $dir = "/"){
+    public function __construct(string $lang = "en", string $dir = "/"){
         $this->siteLang = $lang;
         $this->setIconPath($dir);
         $this->setIconType(self::PNG);
@@ -160,20 +160,39 @@ class GTranslator{
      * @param array $list key => value
      * @return GTranslator $this
     */
-    public function setLanguages($list){
+    public function setLanguages(array $list): GTranslator{
         $this->languages = $list;
         return $this;
     }
 
      /**
-     * Force page to use language to the languages
+     * Automatically detect browser language
+     * @return GTranslator $this
+    */
+    public function autoTranslate(): GTranslator{
+        echo '<script> GTranslator.autoTranslate();</script>';
+       return $this;
+    }
+
+    /**
+     * Set preferred site language
      * @param string $key language code iso 2
      * @return GTranslator $this
     */
-    public function forceLanguage($key){
-        echo '<script> GTranslator.forceLanguage("'.$key.'");</script>';
+    public function preferredLanguage(string $key): GTranslator{
+        echo '<script>GTranslator.preferredLanguage("'.$key.'");</script>';
        return $this;
     }
+
+    /**
+     * @deprecated This method is deprecated and will be removed in future versions. 
+     * Use preferredLanguage(string $key) instead.
+     */
+    public function forceLanguage(string $key): GTranslator {
+        echo '<script>GTranslator.preferredLanguage("'.$key.'");</script>';
+        return $this;
+    }
+
     
     /**
      * Adds a language to the languages
@@ -181,7 +200,7 @@ class GTranslator{
      * @param string $value language country/continent name
      * @return GTranslator $this
     */
-    public function addLanguage($key, $value){
+    public function addLanguage(string $key, string $value): GTranslator{
         $this->languages[$key] = $value;
         return $this;
     }
@@ -190,7 +209,7 @@ class GTranslator{
      * Gets default languages sort accordingly and add english if not available
      * @return array 
     */
-    public function getLanguages(){
+    public function getLanguages(): array{
         $english = ($this->languages["en"]??"English");
         unset($this->languages["en"]);
         $this->languages["en"] = $english;
@@ -203,7 +222,7 @@ class GTranslator{
      * @param string $ele 
      * @return GTranslator $this
     */
-    public function setGoogleElement($ele){
+    public function setGoogleElement(string $ele): GTranslator{
         $this->element = $ele;
         return $this;
     }
@@ -213,7 +232,7 @@ class GTranslator{
      * @param string $ext 
      * @return GTranslator $this
     */
-    public function setIconType($ext){
+    public function setIconType(string $ext): GTranslator{
         $this->iconType = $ext;
         return $this;
     }
@@ -223,8 +242,7 @@ class GTranslator{
      * @param string $path 
      * @return GTranslator $this
     */
-    public function setIconPath($path, $ext = self::PNG){
-        $this->iconType = $ext;
+    public function setIconPath(string $path): GTranslator{
         $this->iconPath = $path;
         return $this;
     }
@@ -234,12 +252,17 @@ class GTranslator{
      * @param string $cls
      * @return GTranslator $this
     */
-    public function setLinkClass($cls){
+    public function setLinkClass(string $cls): GTranslator{
         $this->linkClass = $cls;
         return $this;
     }
 
-    public function setToggleClass($cls){
+    /**
+     * Sets list item class name
+     * @param string $cls
+     * @return GTranslator $this
+    */
+    public function setToggleClass(string $cls): GTranslator{
         $this->toggleClass = $cls;
         return $this;
     }
@@ -247,13 +270,13 @@ class GTranslator{
 
     /**
      * Sets design style default or bootstrap
-     * @param int $prv
-     * @param int $ver bootstrap version [4/5]
+     * @param int $provider
+     * @param int $version bootstrap version [4/5]
      * @return GTranslator $this
     */
-     public function setProvider($prv, $ver = self::BOOTSTRAP_5){
-        $this->provider = $prv;
-        $this->bootstrapVersion = $ver;
+     public function setProvider(int $provider, int $version = self::BOOTSTRAP_5): GTranslator{
+        $this->provider = $provider;
+        $this->bootstrapVersion = $version;
         return $this;
     }
 
@@ -261,7 +284,7 @@ class GTranslator{
      * Gets bootstrap attribute name
      * @return String 
     */
-    public function getBootstrapAttr(){
+    public function getBootstrapAttr(): string{
         return ($this->bootstrapVersion == self::BOOTSTRAP_5 ? "bs-" : "");
     }
 
@@ -270,7 +293,7 @@ class GTranslator{
      * @param boolean $li if link should be child of list item
      * @return html|string $links
     */
-    private function buildLinks($li = false){
+    private function buildLinks(bool $li = false): string{
         $links = "";
         foreach($this->getLanguages() as $key => $value){
             if($li){
@@ -288,7 +311,7 @@ class GTranslator{
      * Builds language selector select options
      * @return html|string $html select 
     */
-    private function selectOptions(){
+    private function selectOptions(): string{
         $this->setLinkClass("select-language-item");
         $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select ' . $this->linkClass . '">';
         foreach($this->getLanguages() as $key => $value){
@@ -301,13 +324,13 @@ class GTranslator{
 
     /**
      * Builds selector design for default ui
-     * @param boolean $imageTrigger if the button is js
+     * @param boolean $jsTrigger if the button is js
      * @return html|string $html
     */
-    private function selectorCustom($imageTrigger = false){
-        $this->imageTrigger = $imageTrigger;
+    private function selectorCustom(bool $jsTrigger = false): string{
+        $this->jsTrigger = $jsTrigger;
         $this->setLinkClass("selected-language-item");
-        if($imageTrigger){
+        if($jsTrigger){
             $html =  '<div class="language-selector g-translator-custom g-custom-js">';
             $html .= '<a class="open-language-selector" href="#">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">';
@@ -317,7 +340,7 @@ class GTranslator{
         }
         $html .= '<ul class="toggle-translator notranslate ' . $this->toggleClass . '">';
         $html .= '<li class="toggle-languages">';
-        if(!$imageTrigger){
+        if(!$jsTrigger){
             $html .= '<a class="" href="#" id="php-g-translator">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">' . $this->languages[$this->siteLang];
             $html .= '<span class="toggle-cert"></span>';
@@ -337,7 +360,7 @@ class GTranslator{
      * Builds selector design for bootstrap ui
      * @return html|string $html
     */
-    private function selectorBootstrap(){
+    private function selectorBootstrap(): string{
         $this->setLinkClass("dropdown-item");
         $html =  '<div class="language-selector">';
         $html .= '<div class="dropdown notranslate">';
@@ -356,20 +379,18 @@ class GTranslator{
     /**
      * Returns computed selector based on provider
      * @param string $width button width
-     * @param boolean $imageTrigger if the button is js
-     * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
+     * @param boolean $jsTrigger if the button is js
     */
-    public function button($width = "170px", $imageTrigger = false){
-        $this->imageButton(false, $width = "170px");
+    public function button(string $width = "170px", bool $jsTrigger = false): void{
+        $this->jsButton(false, $width = "170px");
     }
 
     /**
      * Returns computed button based on provider and js
-     * @param boolean $imageTrigger if the button is js
+     * @param boolean $jsTrigger if the button is js
      * @param string $width button width
-     * @return html|string $this->selectorBootstrap() or $this->selectorCustom()
     */
-    public function imageButton($imageTrigger = true, $width = "170px"){
+    public function jsButton(bool $jsTrigger = true, string $width = "170px"): void{
         $this->selectWidth = $width;
         if(empty($this->languages)){
             trigger_error("Error: make sure you add languages first");
@@ -380,15 +401,14 @@ class GTranslator{
         }else if($this->provider == self::SELECT){
             echo $this->selectOptions();
         }else{
-            echo $this->selectorCustom($imageTrigger);
+            echo $this->selectorCustom($jsTrigger);
         }
     }
 
     /**
      * Renders translator javascript & css engine
-     * @return GTranslator $this
     */
-    public function load(){
+    public function load(): void{
         echo $this->addScript(), $this->addCss();
     }
     
@@ -397,20 +417,69 @@ class GTranslator{
      * @return string|html|javascript $JSScript
     */
 
-    public function addScript(){  
+    public function addScript(): string{  
         $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = GTranslator || {
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
+            OPTION_ACTIVE: false,
             Languages: " . json_encode($this->getLanguages()) . ",
 
-            forceLanguage: function(key){
-                GTranslator.StatusSiteLang = (localStorage.getItem('siteLang')||'{$this->siteLang}');
-                GTranslator.StatusChangeLang = parseInt(localStorage.getItem('changeLang')||0);
-                if(GTranslator.StatusChangeLang == 0 || (GTranslator.StatusChangeLang == 1 && GTranslator.StatusSiteLang == key)){
-                    if(GTranslator.Current() != key && GTranslator.StatusSiteLang != key){
-                        GTranslator.Translate(null, '{$this->siteLang}|' + (key||'en'));
+            preferredLanguage: function(key){
+                var languages = Object.keys(GTranslator.Languages);
+                if (key != '{$this->siteLang}' && GTranslator.Current() == null && GTranslator.getCookie('auto_translated') == null && languages.indexOf(key) >= 0) {
+                    GTranslator.Translate(null, 'en|' + key);
+                    GTranslator.setCookie('auto_translated', 1);
+                }
+            },
+
+            autoTranslate: function(){
+                var key = navigator.language.toLowerCase() || navigator.userLanguage.toLowerCase();
+                switch (key) {
+                    case 'zh-cn':
+                        var preferred = 'zh-CN';
+                        break;
+                    case 'zh':
+                        var preferred = 'zh-CN';
+                        break;
+                    case 'zh-tw':
+                        var preferred = 'zh-TW';
+                        break;
+                    case 'zh-hk':
+                        var preferred = 'zh-TW';
+                        break;
+                    case 'he':
+                        var preferred = 'iw';
+                        break;
+                    default:
+                        var preferred = key.substr(0, 2);
+                        break;
+                }
+                GTranslator.preferredLanguage(preferred);
+            },
+
+            setCookie: function(name, value) {
+                var expirationDate = new Date();
+                expirationDate.setFullYear(expirationDate.getFullYear() + 5);
+                var expires = expirationDate.toUTCString();
+                document.cookie = name + '=' + value + '; expires=' + expires + '; path=/;';
+            },            
+
+            deleteCookie: function(name){
+                var expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() - 1);
+                var expires = expirationDate.toUTCString();
+                document.cookie = name + '=0; expires=' + expires + '; path=/;';
+            },
+
+            getCookie: function(name) {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.indexOf(name + '=') === 0) {
+                        return cookie.substring(name.length + 1);
                     }
                 }
+                return null;
             },
             
             openClose: function(){
@@ -423,13 +492,16 @@ class GTranslator{
             },
 
             Current: function() {
-                var keyValue = document['cookie'].match('(^|;) ?googtrans=([^;]*)(;|$)'); return keyValue ? keyValue[2].split('/')[2] : GTranslator.siteLang;
+                var keyValue = document['cookie'].match('(^|;) ? googtrans=([^;]*)(;|$)'); 
+                return keyValue ? keyValue[2].split('/')[2] : GTranslator.siteLang;
+                /*return keyValue ? keyValue[2].split('/')[2] : null;*/
             },
             
             Event: function(element,event){
                 try{
                     if(document.createEventObject){
-                        var evt=document.createEventObject();element.fireEvent('on'+event,evt)
+                        var evt=document.createEventObject();
+                        element.fireEvent('on'+event,evt)
                     }else{
                         var evt=document.createEvent('HTMLEvents');
                         evt.initEvent(event,true,true);
@@ -464,12 +536,9 @@ class GTranslator{
             },
             
             runTranslate: function(from, to) {
-                        
-                if (GTranslator.Current() == null && lang == from){
+                if (GTranslator.Current() == null && to == from){
                     return;
                 }
-                localStorage.setItem('siteLang', to);
-                localStorage.setItem('changeLang', 1);
                 var teCombo;
                 var sel = document.getElementsByTagName('select');
                 for (var i = 0; i < sel.length; i++){
@@ -478,7 +547,7 @@ class GTranslator{
                         break;
                     } 
                 }
-        
+
                 if (document.getElementById(GTranslator.googleElement) == null || document.getElementById(GTranslator.googleElement).innerHTML.length == 0 || teCombo.length == 0 || teCombo.innerHTML.length == 0) {
                     setTimeout(function() {
                         GTranslator.runTranslate(from, to)
@@ -490,10 +559,8 @@ class GTranslator{
             },
             
             Translate: function(self, lang_pair) {
-                if (typeof lang_pair != 'undefined'){
-                    if(lang_pair.value){
-                        lang_pair = lang_pair.value;
-                    }
+                if (typeof lang_pair != 'undefined' && lang_pair.value){
+                    lang_pair = lang_pair.value;
                 }
         
                 if (lang_pair == '' || lang_pair.length < 1){ 
@@ -502,37 +569,36 @@ class GTranslator{
         
                 var langs = lang_pair.split('|');
                 var from = langs[0];
-                var lang = langs[1];
-                GTranslator.runTranslate(from, lang);
-                var canRun = ". ( $this->imageTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                var to = langs[1];
+                GTranslator.runTranslate(from, to);
+                var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
                 if(canRun){
-                    var langImage  = '<img alt=\"' + lang + '\" src=\"{$this->iconPath}' + lang + '{$this->iconType}\">';
+                    var langImage  = '<img alt=\"' + to + '\" src=\"{$this->iconPath}' + to + '{$this->iconType}\">';
                 ";
                 if($this->provider == self::DEFAULT){
-                    if($this->imageTrigger){
+                    if($this->jsTrigger){
                         $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
                     }else{
-                        $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[lang] + '<span class=\"toggle-cert\"></span>';";
+                        $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[to] + '<span class=\"toggle-cert\"></span>';";
                     }
                 }else if($this->provider == self::BOOTSTRAP){
-                    $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[lang];";
+                    $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + GTranslator.Languages[to];";
                 }
             $JSScript .= "}
             },";
         
             if($this->provider == self::DEFAULT){
                 $JSScript .= "
-                    isOptionActive: false,
                     toggle: function() {
                         var x = document.getElementById('php-gt-languages');
                         if (x.style.display === 'none') {
                             x.style.display = 'block';
                             setTimeout(function(){
-                                GTranslator.isOptionActive = true;
+                            GTranslator.OPTION_ACTIVE = true;
                             }, 500);
                         } else {
                             x.style.display = 'none';
-                            GTranslator.isOptionActive = false;
+                            GTranslator.OPTION_ACTIVE = false;
                         }
                     },
                 
@@ -571,7 +637,7 @@ class GTranslator{
                 
                             document.querySelectorAll('body').forEach(function(ele, i){
                                 ele.addEventListener('click', function(event){
-                                    if(window.getComputedStyle(wheel).display === 'block' && GTranslator.isOptionActive){
+                                    if(window.getComputedStyle(wheel).display === 'block' && GTranslator.OPTION_ACTIVE){
                                         console.log('Is Open');
                                         GTranslator.toggle();
                                         GTranslator.toggleClass();
@@ -579,13 +645,13 @@ class GTranslator{
                                 });
                             });
                          }
-                        var canRun = ". ( $this->imageTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
+                        var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
                         if(canRun && GTranslator.Current() != null){
                             document.querySelectorAll('.drop-li').forEach(function(ele, i){
                                  if(GTranslator.Current() == ele.firstChild.getAttribute('lang')){
                                     var langImage  = '<img alt=\"' + GTranslator.Current() + '\" src=\"{$this->iconPath}' + GTranslator.Current() + '{$this->iconType}\">';
                                     ";
-                                    if($this->imageTrigger){
+                                    if($this->jsTrigger){
                                         $JSScript .= "document.getElementsByClassName('open-language-selector')[0].innerHTML = langImage;";
                                     }else{
                                         $JSScript .= "GTranslator.GButton().innerHTML = langImage + ' ' + ele.firstChild.textContent + '<span class=\"toggle-cert\"></span>';";
@@ -610,18 +676,20 @@ class GTranslator{
                     }
                 };";
             }else if($this->provider == self::SELECT){
-                $JSScript .= "
+                $JSScript .= "}},
                     trigger: function(self){
                         GTranslator.Translate(null, '{$this->siteLang}|' + self.value);
-                        localStorage.setItem('siteLang', self.value);
-                        localStorage.setItem('changeLang', 1);
                         return false;
                     },
                     Init:function(){
                         GTranslator.GoogleScript();
                         if(null!=GTranslator.Current()){
-                            var selectElement = document.getElementsByClassName('php-language-select')[0];
-                            selectElement.value = GTranslator.Current();
+                            var formObj = document.getElementsByClassName('php-language-select');
+                            for(let i = 0, len = formObj.length; i < len; i++){
+                                if(formObj[i].value == GTranslator.Current()){
+                                    formObj.options[i].selected = true;
+                                }
+                            }
                         }
                     }
                 };";
@@ -643,7 +711,7 @@ class GTranslator{
      * Returns css style-sheet for design
      * @return string|html|css $styleSheet
     */
-    private function addCss(){
+    private function addCss(): string{
         $styleSheet = " <style>body.php-google-translator{top:0 !important}.skiptranslate,.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,div[class^='VIpgJd-ZVi9od-aZ2wEe-wOHMyf-'],#{$this->element}, #goog-gt-tt, .goog-te-banner-frame{display:none !important}#php-g-translator img{height:16px;width:16px}";
         if($this->provider == self::DEFAULT){
             $styleSheet .= ".open-language-selector, .g-custom-js{display: inline-block;width:16px;height:16px;}
