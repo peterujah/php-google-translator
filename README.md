@@ -81,9 +81,23 @@ $translate->setIconPath("/assets/flags/")->setIconType(GTranslator::PNG);
  ```
  
   Force translate page once pages is loaded, this must be called after `$translate->load();`
+  Method has deprecated and will be removed in future versions. 
+  Use preferredLanguage(string $key) instead.
  ```php 
 $translate->forceLanguage("ms");
  ```
+
+  Set prefered language, this must be called after `$translate->load();`
+ ```php 
+$translate->preferredLanguage("ms");
+ ```
+
+  Automatically detect browser language, this must be called after `$translate->load();`
+ ```php 
+$translate->autoTranslate();
+ ```
+
+
  
  Full usage on website to translate webpage
  
