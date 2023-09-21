@@ -125,7 +125,7 @@ $translate->autoTranslate();
           We believe in banking locally and hope you will too. 
         </p>
       </div>
-      <?php $translate->load();$translate->forceLanguage($translate->siteLang);?>
+      <?php $translate->load();$translate->preferredLanguage("ms");?>
   </body>
 </html>
 ```
