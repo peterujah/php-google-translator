@@ -104,7 +104,7 @@ $translate->autoTranslate();
  ```php
 <?php 
  use Peterujah\NanoBlock\GTranslator;
- $translate = new GTranslator(substr(($_SERVER['HTTP_ACCEPT_LANGUAGE']??"en"), 0, 2), "/assets/flags/");
+ $translate = new GTranslator("en", "/assets/flags/");
 ?>
 <!DOCTYPE html>
 <html lang="en">
