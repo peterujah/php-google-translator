@@ -66,13 +66,13 @@ class GTranslator{
      * Hold additional link class name for language selector options
      * @var string
     */
-    private string $linkClass;
+    private string $linkClass = '';
 
     /**
      * Hold button boggle custom class  
      * @var string
     */
-    private string $toggleClass;
+    private string $toggleClass = '';
 
     /**
      * Hold button type 
@@ -98,14 +98,14 @@ class GTranslator{
      *
      * @var string
     */
-    private string $iconPath;
+    private string $iconPath = '';
 
     /**
      * Hold selected icon type
      *
      * @var string
     */
-    private string $iconType;
+    private string $iconType = '';
     
      /**
      * Hold ui design provider type
@@ -119,7 +119,7 @@ class GTranslator{
      *
      * @var string
     */
-    private string $bootstrapVersion;
+    private string $bootstrapVersion = '';
 
     /**
      * Hold list of languages to  build
@@ -311,8 +311,12 @@ class GTranslator{
      * Builds language selector select options
      * @return html|string $html select 
     */
-    private function selectOptions(): string{
-        $this->setLinkClass("select-language-item");
+    private function selectOptions(): string {
+        $class = 'select-language-item';
+        if($this->linkClass !== ''){
+            $class .= ' ' . $this->linkClass;
+        }
+        $this->setLinkClass($class);
         $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select ' . $this->linkClass . '">';
         foreach($this->getLanguages() as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
@@ -329,7 +333,11 @@ class GTranslator{
     */
     private function selectorCustom(bool $jsTrigger = false): string{
         $this->jsTrigger = $jsTrigger;
-        $this->setLinkClass("selected-language-item");
+        $class = 'select-language-item';
+        if($this->linkClass !== ''){
+            $class .= ' ' . $this->linkClass;
+        }
+        $this->setLinkClass($class);
         if($jsTrigger){
             $html =  '<div class="language-selector g-translator-custom g-custom-js">';
             $html .= '<a class="open-language-selector" href="#">';
@@ -361,7 +369,11 @@ class GTranslator{
      * @return html|string $html
     */
     private function selectorBootstrap(): string{
-        $this->setLinkClass("dropdown-item");
+        $class = 'dropdown-item';
+        if($this->linkClass !== ''){
+            $class .= ' ' . $this->linkClass;
+        }
+        $this->setLinkClass($class);
         $html =  '<div class="language-selector">';
         $html .= '<div class="dropdown notranslate">';
         $html .= '<button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="php-g-translator" data-' . $this->getBootstrapAttr() . 'toggle="dropdown" aria-expanded="false">';
@@ -661,7 +673,7 @@ class GTranslator{
                             });
                         }
                     }
-                };";
+                ";
             }else if($this->provider == self::BOOTSTRAP){
                 $JSScript .= "
                     Init: function(){
@@ -674,9 +686,9 @@ class GTranslator{
                             });
                         }
                     }
-                };";
+                ";
             }else if($this->provider == self::SELECT){
-                $JSScript .= "}},
+                $JSScript .= "
                     trigger: function(self){
                         GTranslator.Translate(null, '{$this->siteLang}|' + self.value);
                         return false;
@@ -691,11 +703,12 @@ class GTranslator{
                                 }
                             }
                         }
-                    }
-                };";
+                     }
+                ";
             }
 
             $JSScript .= "
+                };
                 (function(){
                     window.onload = function() {
                         GTranslator.Init();
