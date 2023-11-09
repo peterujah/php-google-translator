@@ -438,9 +438,11 @@ class GTranslator{
 
             preferredLanguage: function(key){
                 var languages = Object.keys(GTranslator.Languages);
-                if (key != '{$this->siteLang}' && GTranslator.Current() == null && GTranslator.getCookie('auto_translated') == null && languages.indexOf(key) >= 0) {
-                    GTranslator.Translate(null, 'en|' + key);
-                    GTranslator.setCookie('auto_translated', 1);
+                if(GTranslator.Current() == null || GTranslator.Current() != key){
+                    if (key != '{$this->siteLang}' && GTranslator.getCookie('auto_translated') == null && languages.indexOf(key) >= 0) {
+                        GTranslator.Translate(null, 'en|' + key);
+                        GTranslator.setCookie('auto_translated', 1);
+                    }
                 }
             },
 
