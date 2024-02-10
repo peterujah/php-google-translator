@@ -697,15 +697,15 @@ class GTranslator{
                     },
                     Init:function(){
                         GTranslator.GoogleScript();
-                        if(null!=GTranslator.Current()){
-                            var formObj = document.getElementsByClassName('php-language-select');
+                        if(null != GTranslator.Current()){
+                            var formObj = document.getElementsByClassName('php-language-select')[0];
                             for(let i = 0, len = formObj.length; i < len; i++){
-                                if(formObj[i].value == GTranslator.Current()){
-                                    formObj[i].options[i].selected = true;
+                                if(formObj.options[i].value === GTranslator.Current()){
+                                    formObj.options[i].selected = true;
                                 }
                             }
                         }
-                     }
+                    }
                 ";
             }
 
