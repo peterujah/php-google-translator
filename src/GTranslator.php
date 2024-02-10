@@ -701,7 +701,7 @@ class GTranslator{
                             var formObj = document.getElementsByClassName('php-language-select');
                             for(let i = 0, len = formObj.length; i < len; i++){
                                 if(formObj[i].value == GTranslator.Current()){
-                                    formObj.options[i].selected = true;
+                                    formObj[i].options[i].selected = true;
                                 }
                             }
                         }
