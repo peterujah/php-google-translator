@@ -65,7 +65,7 @@ $translate->setIconPath("/assets/flags/")->setIconType(GTranslator::PNG);
  $translate->button(optional width = "50%");
  ```
  
- When your provider is `GTranslator::SELECT`, button will return a html select option 
+ When your provider is `GTranslator::SELECT`, button will return a html select option.
   ```php 
  $translate->button();
  ```
@@ -75,24 +75,29 @@ $translate->setIconPath("/assets/flags/")->setIconType(GTranslator::PNG);
  $translate->imageButton();
  ```
  
- Load supportes javascript plugin
+ Load translator javascript plugin
  ```php 
  $translate->load();
  ```
  
-  Force translate page once pages is loaded, this must be called after `$translate->load();`
-  Method has deprecated and will be removed in future versions. 
-  Use preferredLanguage(string $key) instead.
+Sets dropdown contemner class name.
+
  ```php 
-$translate->forceLanguage("ms");
+$translate->setContainerClass("my-translator");
  ```
 
-  Set prefered language, this must be called after `$translate->load();`
+Sets dropdown items class name.
+
+ ```php 
+$translate->setItemsClass("my-translator");
+ ```
+
+Set preferred language, this must be called after `$translate->load();`
  ```php 
 $translate->preferredLanguage("ms");
  ```
 
-  Automatically detect browser language, this must be called after `$translate->load();`
+Automatically detect browser language, this must be called after `$translate->load();`
  ```php 
 $translate->autoTranslate();
  ```
