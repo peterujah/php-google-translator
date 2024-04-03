@@ -58,31 +58,42 @@ class GTranslator{
 
     /**
      * Hold google translator element id name 
-     * @var string
+     * 
+     * @var string $element
     */
     private string $element = "google_translate_element2";
 
     /**
      * Hold additional link class name for language selector options
-     * @var string
+     * @var string $itemsClass
     */
-    private string $linkClass = '';
+    private string $itemsClass = '';
+
+     /**
+     * Hold button classes 
+     * 
+     * @var string $buttonClass
+    */
+    private string $buttonClass = '';
 
     /**
-     * Hold button boggle custom class  
-     * @var string
+     * Hold items container custom class  
+     * 
+     * @var string $containerClass
     */
-    private string $toggleClass = '';
+    private string $containerClass = '';
 
     /**
      * Hold button type 
-     * @var bool
+     * 
+     * @var bool $jsTrigger
     */
     private bool $jsTrigger = false;
 
     /**
      * Hold additional css width value selector container element
-     * @var string
+     * 
+     * @var string $selectWidth
     */
     private string $selectWidth = "170px";
 
@@ -110,21 +121,21 @@ class GTranslator{
      /**
      * Hold ui design provider type
      *
-     * @var int
+     * @var int $provider
     */
     private int $provider;
 
     /**
      * Hold bootstrap design provider version
      *
-     * @var string
+     * @var string $bootstrapVersion
     */
     private string $bootstrapVersion = '';
 
     /**
      * Hold list of languages to  build
      *
-     * @var array
+     * @var array<string, string> $languages
     */
     private array $languages = [
         "en" => "English",
@@ -145,10 +156,12 @@ class GTranslator{
   
     /**
      * Constructor.
+     * 
      * @param string  $lang set initial site language
      * @param string $dir set initial icon directory
     */
-    public function __construct(string $lang = "en", string $dir = "/"){
+    public function __construct(string $lang = "en", string $dir = "./")
+    {
         $this->siteLang = $lang;
         $this->setIconPath($dir);
         $this->setIconType(self::PNG);
@@ -160,8 +173,10 @@ class GTranslator{
      * @param array $list key => value
      * @return GTranslator $this
     */
-    public function setLanguages(array $list): GTranslator{
+    public function setLanguages(array $list): self 
+    {
         $this->languages = $list;
+
         return $this;
     }
 
@@ -169,9 +184,11 @@ class GTranslator{
      * Automatically detect browser language
      * @return GTranslator $this
     */
-    public function autoTranslate(): GTranslator{
+    public function autoTranslate(): self 
+    {
         echo '<script> GTranslator.autoTranslate();</script>';
-       return $this;
+
+        return $this;
     }
 
     /**
@@ -179,18 +196,21 @@ class GTranslator{
      * @param string $key language code iso 2
      * @return GTranslator $this
     */
-    public function preferredLanguage(string $key): GTranslator{
+    public function preferredLanguage(string $key): self 
+    {
         echo '<script>GTranslator.preferredLanguage("'.$key.'");</script>';
-       return $this;
+
+        return $this;
     }
 
     /**
      * @deprecated This method is deprecated and will be removed in future versions. 
+     * 
      * Use preferredLanguage(string $key) instead.
      */
-    public function forceLanguage(string $key): GTranslator {
-        echo '<script>GTranslator.preferredLanguage("'.$key.'");</script>';
-        return $this;
+    public function forceLanguage(string $key): self  
+    {
+        return $this->preferredLanguage($key);
     }
 
     
@@ -200,8 +220,10 @@ class GTranslator{
      * @param string $value language country/continent name
      * @return GTranslator $this
     */
-    public function addLanguage(string $key, string $value): GTranslator{
+    public function addLanguage(string $key, string $value): self 
+    {
         $this->languages[$key] = $value;
+
         return $this;
     }
 
@@ -209,31 +231,40 @@ class GTranslator{
      * Gets default languages sort accordingly and add english if not available
      * @return array 
     */
-    public function getLanguages(): array{
+    public function getLanguages(): array
+    {
         $english = ($this->languages["en"]??"English");
         unset($this->languages["en"]);
+
         $this->languages["en"] = $english;
         asort($this->languages);
+
         return $this->languages;
     }
 
     /**
      * Sets google element id name
      * @param string $ele 
+     * 
      * @return GTranslator $this
     */
-    public function setGoogleElement(string $ele): GTranslator{
+    public function setGoogleElement(string $ele): self 
+    {
         $this->element = $ele;
+
         return $this;
     }
 
     /**
      * Sets icon extension type
-     * @param string $ext 
+     * @param string $type 
+     * 
      * @return GTranslator $this
     */
-    public function setIconType(string $ext): GTranslator{
-        $this->iconType = $ext;
+    public function setIconType(string $type): self 
+    {
+        $this->iconType = $type;
+
         return $this;
     }
 
@@ -242,28 +273,36 @@ class GTranslator{
      * @param string $path 
      * @return GTranslator $this
     */
-    public function setIconPath(string $path): GTranslator{
+    public function setIconPath(string $path): self 
+    {
         $this->iconPath = $path;
+
         return $this;
     }
 
     /**
      * Sets selectors additional link class name
-     * @param string $cls
+     * @param string $classes
+     * 
      * @return GTranslator $this
     */
-    public function setLinkClass(string $cls): GTranslator{
-        $this->linkClass = $cls;
+    public function setItemsClass(string $classes): self 
+    {
+        $this->itemsClass = $classes;
+
         return $this;
     }
 
     /**
      * Sets list item class name
-     * @param string $cls
+     * @param string $classes
+     * 
      * @return GTranslator $this
     */
-    public function setToggleClass(string $cls): GTranslator{
-        $this->toggleClass = $cls;
+    public function setContainerClass(string $classes): self 
+    {
+        $this->containerClass = $classes;
+
         return $this;
     }
 
@@ -272,11 +311,14 @@ class GTranslator{
      * Sets design style default or bootstrap
      * @param int $provider
      * @param int $version bootstrap version [4/5]
+     * 
      * @return GTranslator $this
     */
-     public function setProvider(int $provider, int $version = self::BOOTSTRAP_5): GTranslator{
+    public function setProvider(int $provider, int $version = self::BOOTSTRAP_5): self 
+    {
         $this->provider = $provider;
         $this->bootstrapVersion = $version;
+
         return $this;
     }
 
@@ -284,7 +326,8 @@ class GTranslator{
      * Gets bootstrap attribute name
      * @return String 
     */
-    public function getBootstrapAttr(): string{
+    public function getBootstrapAttr(): string
+    {
         return ($this->bootstrapVersion == self::BOOTSTRAP_5 ? "bs-" : "");
     }
 
@@ -293,13 +336,14 @@ class GTranslator{
      * @param boolean $li if link should be child of list item
      * @return html|string $links
     */
-    private function buildLinks(bool $li = false): string{
+    private function buildLinks(bool $li = false): string
+    {
         $links = "";
         foreach($this->getLanguages() as $key => $value){
             if($li){
                 $links .= '<li class="drop-li">';
             }
-            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\');return false;" lang="'.$key.'" title="'.$value.'" class="' . $this->linkClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
+            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\');return false;" lang="'.$key.'" title="'.$value.'" class="' . $this->itemsClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
             if($li){
                 $links .= '</li>';
             }
@@ -309,20 +353,20 @@ class GTranslator{
 
     /**
      * Builds language selector select options
+     * 
      * @return html|string $html select 
     */
-    private function selectOptions(): string {
-        $class = 'select-language-item';
-        if($this->linkClass !== ''){
-            $class .= ' ' . $this->linkClass;
-        }
-        $this->setLinkClass($class);
-        $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select ' . $this->linkClass . '">';
+    private function selectOptions(): string 
+    {
+        $links = '<select onchange="GTranslator.trigger(this)" class="notranslate php-language-select select-language-item ' . $this->buttonClass . '">';
+
         foreach($this->getLanguages() as $key => $value){
             $links .= '<option value="'.$key.'" lang="'.$key.'" title="'.$value.'">' . $value . '</option>';
         }
+
         $links .= '</select>';
         $links .= '<div id="'.$this->element.'"></div>';
+
         return $links;
     }
 
@@ -331,25 +375,26 @@ class GTranslator{
      * @param boolean $jsTrigger if the button is js
      * @return html|string $html
     */
-    private function selectorCustom(bool $jsTrigger = false): string{
+    private function selectorCustom(bool $jsTrigger = false): string
+    {
         $this->jsTrigger = $jsTrigger;
         $class = 'select-language-item';
-        if($this->linkClass !== ''){
-            $class .= ' ' . $this->linkClass;
+        if($this->itemsClass !== ''){
+            $class .= ' ' . $this->itemsClass;
         }
-        $this->setLinkClass($class);
+        $this->setItemsClass($class);
         if($jsTrigger){
             $html =  '<div class="language-selector g-translator-custom g-custom-js">';
-            $html .= '<a class="open-language-selector" href="#">';
+            $html .= '<a class="open-language-selector ' . $this->buttonClass . '" href="#">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">';
             $html .= '</a>';
         }else{
             $html =  '<div class="language-selector g-translator-custom">';
         }
-        $html .= '<ul class="toggle-translator notranslate ' . $this->toggleClass . '">';
+        $html .= '<ul class="toggle-translator notranslate ' . $this->containerClass . '">';
         $html .= '<li class="toggle-languages">';
         if(!$jsTrigger){
-            $html .= '<a class="" href="#" id="php-g-translator">';
+            $html .= '<a class="' . $this->buttonClass . '" href="#" id="php-g-translator">';
             $html .= '<img alt="'.$this->siteLang.'" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '">' . $this->languages[$this->siteLang];
             $html .= '<span class="toggle-cert"></span>';
             $html .= '</a>';
@@ -361,6 +406,7 @@ class GTranslator{
         $html .=  '</ul>';
         $html .= '<div id="'.$this->element.'"></div>';
         $html .=  '</div>';
+        
         return $html;
     }
 
@@ -368,46 +414,51 @@ class GTranslator{
      * Builds selector design for bootstrap ui
      * @return html|string $html
     */
-    private function selectorBootstrap(): string{
+    private function selectorBootstrap(): string
+    {
         $class = 'dropdown-item';
-        if($this->linkClass !== ''){
-            $class .= ' ' . $this->linkClass;
+        if($this->itemsClass !== ''){
+            $class .= ' ' . $this->itemsClass;
         }
-        $this->setLinkClass($class);
+        $this->setItemsClass($class);
         $html =  '<div class="language-selector">';
         $html .= '<div class="dropdown notranslate">';
-        $html .= '<button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="php-g-translator" data-' . $this->getBootstrapAttr() . 'toggle="dropdown" aria-expanded="false">';
+        $html .= '<button class="btn dropdown-toggle ' . $this->buttonClass . '" type="button" id="php-g-translator" data-' . $this->getBootstrapAttr() . 'toggle="dropdown" aria-expanded="false">';
         $html .= '<img alt="' . $this->siteLang . '" src="' . $this->iconPath . $this->siteLang . $this->iconType  . '"> ' . ($this->languages[$this->siteLang]??$this->siteLang);
         $html .= '</button>';
-        $html .= ' <ul id="php-gt-languages" class="dropdown-menu" aria-labelledby="php-g-translator">';
+        $html .= ' <ul id="php-gt-languages" class="dropdown-menu ' . $this->containerClass . '" aria-labelledby="php-g-translator">';
         $html .=  $this->buildLinks(true);
         $html .= '</ul>';
         $html .= '<div id="'.$this->element.'"></div>';
         $html .= '</div>';
         $html .= '</div>';
+
         return $html;
     }
 
     /**
      * Returns computed selector based on provider
      * @param string $width button width
-     * @param boolean $jsTrigger if the button is js
     */
-    public function button(string $width = "170px", bool $jsTrigger = false): void{
-        $this->jsButton(false, $width = "170px");
+    public function button(string $width = "170px"): void
+    {
+        $this->jsButton(false, $width);
     }
 
     /**
-     * Returns computed button based on provider and js
+     * Returns computed button based on provider and js.
+     * 
      * @param boolean $jsTrigger if the button is js
      * @param string $width button width
     */
-    public function jsButton(bool $jsTrigger = true, string $width = "170px"): void{
+    public function jsButton(bool $jsTrigger = true, string $width = "170px"): void
+    {
         $this->selectWidth = $width;
         if(empty($this->languages)){
             trigger_error("Error: make sure you add languages first");
             return;
         }
+
         if($this->provider == self::BOOTSTRAP){
             echo $this->selectorBootstrap();
         }else if($this->provider == self::SELECT){
@@ -420,7 +471,8 @@ class GTranslator{
     /**
      * Renders translator javascript & css engine
     */
-    public function load(): void{
+    public function load(): void
+    {
         echo $this->addScript(), $this->addCss();
     }
     
@@ -429,7 +481,8 @@ class GTranslator{
      * @return string|html|javascript $JSScript
     */
 
-    public function addScript(): string{  
+    public function addScript(): string
+    {  
         $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = GTranslator || {
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
@@ -507,7 +560,7 @@ class GTranslator{
 
             Current: function() {
                 var keyValue = document['cookie'].match('(^|;) ? googtrans=([^;]*)(;|$)'); 
-                return keyValue ? keyValue[2].split('/')[2] : GTranslator.siteLang;
+                return keyValue ? keyValue[2].split('/')[2] : self .siteLang;
                 /*return keyValue ? keyValue[2].split('/')[2] : null;*/
             },
             
