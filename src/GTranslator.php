@@ -343,7 +343,7 @@ class GTranslator{
             if($li){
                 $links .= '<li class="drop-li">';
             }
-            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\');return false;" lang="'.$key.'" title="'.$value.'" class="' . $this->itemsClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
+            $links .= '<a href="#" onclick="GTranslator.Translate(this, \'' . $this->siteLang . '|' . $key . '\', false);return false;" lang="'.$key.'" title="'.$value.'" class="' . $this->itemsClass . '"><img alt="'.$key.'" src="' . $this->iconPath . $key . $this->iconType . '" width="16" height="16"> ' . $value . '</a>';
             if($li){
                 $links .= '</li>';
             }
@@ -492,9 +492,10 @@ class GTranslator{
             preferredLanguage: function(key){
                 var languages = Object.keys(GTranslator.Languages);
                 if(GTranslator.Current() == null || GTranslator.Current() != key){
-                    if (key != '{$this->siteLang}' && GTranslator.getCookie('auto_translated') == null && languages.indexOf(key) >= 0) {
-                        GTranslator.Translate(null, 'en|' + key);
-                        GTranslator.setCookie('auto_translated', 1);
+                    var au = GTranslator.getCookie('auto_translated');
+
+                    if (key != '{$this->siteLang}' && (au == null || au == 0) && languages.indexOf(key) >= 0) {
+                        GTranslator.Translate(null, 'en|' + key, true);
                     }
                 }
             },
@@ -625,7 +626,7 @@ class GTranslator{
                 }
             },
             
-            Translate: function(self, lang_pair) {
+            Translate: function(self, lang_pair, auto) {
                 if (typeof lang_pair != 'undefined' && lang_pair.value){
                     lang_pair = lang_pair.value;
                 }
@@ -638,6 +639,7 @@ class GTranslator{
                 var from = langs[0];
                 var to = langs[1];
                 GTranslator.runTranslate(from, to);
+                GTranslator.setCookie('auto_translated', auto ? 1 : 0);
                 var canRun = ". ( $this->jsTrigger ? "1" : "(GTranslator.GButton() != null ? 1 : 0)") . ";
                 if(canRun){
                     var langImage  = '<img alt=\"' + to + '\" src=\"{$this->iconPath}' + to + '{$this->iconType}\">';
@@ -745,7 +747,7 @@ class GTranslator{
             }else if($this->provider == self::SELECT){
                 $JSScript .= "
                     trigger: function(self){
-                        GTranslator.Translate(null, '{$this->siteLang}|' + self.value);
+                        GTranslator.Translate(null, '{$this->siteLang}|' + self.value, false);
                         return false;
                     },
                     Init:function(){
