@@ -1,5 +1,17 @@
-# php-google-translator
-Php wrapper for google javascript translator website plugin. It will create a dropdown option for languages.
+# PHP Google Translator
+
+A lightweight PHP wrapper for the Google Translate JavaScript plugin.
+
+This library allows you to easily integrate a language selector into your website, supporting:
+
+* **Dropdown or image/button selectors** for multiple languages.
+* **Automatic browser language detection** and preferred language settings.
+* **Customizable UI** with options for default, select, or Bootstrap-styled dropdowns.
+* **Flexible icon support** with PNG or SVG flags from a local or remote path.
+* **Full control over CSS classes** for containers and items.
+
+Designed to simplify adding multilingual support to your site while keeping integration straightforward.
+
 
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/en.jpg)
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/cn.jpg)
@@ -13,125 +25,182 @@ Installation is super-easy via Composer:
 composer require peterujah/php-google-translator
 ```
 
+---
 
-# USAGES
 
-Initalize with page languages
-```php 
+## Usage
+
+### Initialize the translator
+
+With a base path for flag icons:
+
+```php
 use Peterujah\NanoBlock\GTranslator;
+
 $translate = new GTranslator("en", "/assets/flags/");
 ```
 
-Or without icon path
-```php 
-use Peterujah\NanoBlock\GTranslator;
+Without specifying an icon path:
+
+```php
 $translate = new GTranslator("en");
 ```
 
-set selector design provider, you can choose between `DEFAULT`, `SELECT` or `BOOTSTRAP.`
-The `DEFAULT` is the default provider
-```php 
-$translate->setProvider(GTranslator::DEFAULT || GTranslator::SELECT || GTranslator::BOOTSTRAP);
-```
+---
 
-Set languages icon path and icon type `GTranslator::PNG || GTranslator::SVG`.
-`PNG` or `SVG` to use icons download country language flag icon and set the Relative or Absolute path
+### Set the selector provider
+
+Choose between:
+
+* `GTranslator::DEFAULT` (default HTML dropdown or image button)
+* `GTranslator::SELECT` (HTML select dropdown)
+* `GTranslator::BOOTSTRAP` (Bootstrap dropdown)
 
 ```php
-$translate->setIconPath("https://foo.com/assets/flags/", GTranslator::PNG);
- ```
-Or set individually by first setting path and then type to override the default type
+$translate->setProvider(GTranslator::DEFAULT);
+// or
+$translate->setProvider(GTranslator::SELECT);
+// or
+$translate->setProvider(GTranslator::BOOTSTRAP);
+```
+
+---
+
+### Configure icon path and type
+
+Set the relative or absolute path for your flag icons and choose between `GTranslator::PNG` or `GTranslator::SVG`:
 
 ```php
 $translate->setIconPath("/assets/flags/")->setIconType(GTranslator::PNG);
- ```
- 
- Adding additional language to translator
- ```php
- $translate->addLanguage("en", "English")->addLanguage("ig", "Igbo");
- ```
- 
- Or load your languages to override the default 
- 
- ```php
- $translate->setLanguages([
-  "en" => "English",
-  "ig" => "Igbo"
- ])
- ```
- 
- Display select option for languages, it accepts optional width.
- ```php 
- $translate->button(optional width = "50%");
- ```
- 
- When your provider is `GTranslator::SELECT`, button will return a html select option.
-  ```php 
- $translate->button();
- ```
- 
-  To use image button, your provider must be `GTranslator::DEFAULT`
-  ```php 
- $translate->imageButton();
- ```
- 
- Load translator javascript plugin
- ```php 
- $translate->load();
- ```
- 
-Sets dropdown contemner class name.
+```
 
- ```php 
+Or using an external URL:
+
+```php
+$translate->setIconPath("https://example.com/assets/flags/")->setIconType(GTranslator::PNG);
+```
+
+---
+
+### Manage languages
+
+Add additional languages individually:
+
+```php
+$translate->addLanguage("en", "English")
+    ->addLanguage("ig", "Igbo");
+```
+
+Or override the default language map:
+
+```php
+$translate->setLanguages([
+    "en" => "English",
+    "ig" => "Igbo",
+]);
+```
+
+---
+
+### Display the language selector
+
+Render the selector with an optional width (default `"170px"`):
+
+```php
+$translate->button("50%");
+```
+
+Behavior depends on the provider:
+
+* **`GTranslator::SELECT`** → returns a `<select>` element.
+* **`GTranslator::BOOTSTRAP`** → returns a bootstrap dropdown `<li>` element.
+* **`GTranslator::DEFAULT`** → returns an image/button interface:
+
+Image JS trigger button uses `GTranslator::DEFAULT`
+
+```php
+$translate->setProvider(GTranslator::DEFAULT);
+$translate->jsButton(true);
+```
+
+---
+
+### Load the translator engine
+
+Include the Google Translate JS and CSS:
+
+```php
+$translate->load();
+```
+
+---
+
+### Customize classes
+
+Set the container class:
+
+```php
 $translate->setContainerClass("my-translator");
- ```
+```
 
-Sets dropdown items class name.
+Set individual item classes:
 
- ```php 
+```php
 $translate->setItemsClass("my-translator");
- ```
+```
 
-Set preferred language, this must be called after `$translate->load();`
- ```php 
+---
+
+### Control language behavior
+
+Set a preferred language (must be after `load()`):
+
+```php
 $translate->preferredLanguage("ms");
- ```
+```
 
-Automatically detect browser language, this must be called after `$translate->load();`
- ```php 
+Automatically detect the browser language (must be after `load()`):
+
+```php
 $translate->autoTranslate();
- ```
+```
 
+---
 
- 
- Full usage on website to translate webpage
- 
- ```php
+### Full example
+
+```php
 <?php 
- use Peterujah\NanoBlock\GTranslator;
- $translate = new GTranslator("en", "/assets/flags/");
+use Peterujah\NanoBlock\GTranslator;
+
+$translate = new GTranslator("en", "/assets/flags/");
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>PHP Google Translator</title>
-  </head>
-  <body>
-      <div class="button">
-        <?php $translate->button();?>
-      </div>
-      <div class="content">
-        <h2>We have a long history of service in the Bay Area</h2>
+</head>
+<body>
 
-        <p>
-          We were one of the first credit unions that operate world wide, founded in 1932 as City &amp; County Employees' Credit Union. 
-          Membership is now open to anyone who lives, works, or attends school in 
-          Alameda, Contra Costa, San Joaquin, Solano, Stanislaus, or Kings counties in California. 
-          We believe in banking locally and hope you will too. 
-        </p>
-      </div>
-      <?php $translate->load();$translate->preferredLanguage("ms");?>
-  </body>
+<div class="button">
+    <?php $translate->button(); ?>
+</div>
+
+<div class="content">
+     <h2>We have a long history of service in the Bay Area</h2>
+    <p>
+        We were one of the first credit unions that operate world wide, founded in 1932 as City &amp; County Employees' Credit Union. 
+        Membership is now open to anyone who lives, works, or attends school in 
+        Alameda, Contra Costa, San Joaquin, Solano, Stanislaus, or Kings counties in California. 
+        We believe in banking locally and hope you will too. 
+    </p>
+</div>
+
+<?php
+$translate->load();
+$translate->preferredLanguage("ms");
+?>
+
+</body>
 </html>
 ```
- 
