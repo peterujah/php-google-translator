@@ -1,6 +1,6 @@
 <?php 
 /**
- * Cache - A simple php class for google javascript translator
+ * GTranslator - A simple php class for google javascript translator
  * @author      Peter Chigozie(NG) peterujah
  * @copyright   Copyright (c), 2022 Peter(NG) peterujah
  * @license     MIT public license
@@ -129,14 +129,14 @@ class GTranslator
     /**
      * Hold bootstrap design provider version
      *
-     * @var string $bootstrapVersion
+     * @var int $bootstrapVersion
     */
-    private string $bootstrapVersion = '';
+    private int $bootstrapVersion = 0;
 
     /**
      * Hold list of languages to  build
      *
-     * @var array<string, string> $languages
+     * @var array<string,string> $languages
     */
     private array $languages = [
         "en" => "English",
@@ -278,8 +278,7 @@ class GTranslator
      */
     public function setIconType(string $type): self 
     {
-        $this->iconType = $type;
-
+        $this->iconType = '.' . ltrim($type, '.');
         return $this;
     }
 
@@ -292,8 +291,7 @@ class GTranslator
      */
     public function setIconPath(string $base): self 
     {
-        $this->iconPath = $base;
-
+        $this->iconPath = rtrim($base, '/') . '/';
         return $this;
     }
 
@@ -307,7 +305,6 @@ class GTranslator
     public function setItemsClass(string $classes): self 
     {
         $this->itemsClass = $classes;
-
         return $this;
     }
 
@@ -321,7 +318,6 @@ class GTranslator
     public function setContainerClass(string $classes): self 
     {
         $this->containerClass = $classes;
-
         return $this;
     }
 
@@ -414,7 +410,7 @@ class GTranslator
      */
     public function addScript(): string
     {  
-        $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = GTranslator || {
+        $JSScript = "<script id='php-g-translator-plugin'>var GTranslator = window.GTranslator || {
             siteLang: \"{$this->siteLang}\",
             googleElement: \"{$this->element}\",
             OPTION_ACTIVE: false,
@@ -754,7 +750,6 @@ class GTranslator
         $styleSheet .= "</style>";
         return $styleSheet;
     }
-
 
     /**
      * Builds language selector links
