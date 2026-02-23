@@ -12,6 +12,8 @@ This library allows you to easily integrate a language selector into your websit
 
 Designed to simplify adding multilingual support to your site while keeping integration straightforward.
 
+---
+
 
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/en.jpg)
 ![alt text](https://github.com/peterujah/php-google-translator/blob/df2497403282a8d3a9cd629649aa361d3100a503/assets/cn.jpg)
