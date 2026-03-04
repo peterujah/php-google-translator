@@ -124,7 +124,7 @@ class GTranslator
      *
      * @var string
     */
-    private string $certColor = 'none';
+    private string $certColor = 'currentColor';
     
     /**
      * Hold ui design provider type
@@ -199,7 +199,7 @@ class GTranslator
      */
     public function setCertColor(string $color): self
     {
-        $this->certColor = $color;
+        $this->certColor = urlencode($color);
         return $this;
     }
 
@@ -751,7 +751,7 @@ class GTranslator
             .g-translator-custom a:hover img{opacity:1} 
             .g-translator-custom .toggle-languages{background-color:#FFFFFF; position:relative; z-index:9999; cursor: pointer} 
             .g-translator-custom .toggle-languages a{border:1px solid #CCCCCC;color:#666666;padding:3px 5px} 
-            .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg class='caret-down' width='12' height='8' fill='{$this->certColor}' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 1.5l-5 5-5-5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' stroke='%23000'%3E%3C/path%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} 
+            .g-translator-custom .toggle-cert{background-image: url(\"data:image/svg+xml,%3Csvg%20class='caret-down'%20width='12'%20height='8'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cpath%20d='M11%201.5l-5%205-5-5'%20stroke='{$this->certColor}'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E\");background-repeat: no-repeat;background-position: center;padding:3px 5px;width: 12px;position: absolute;right: 0px;top: 0px;bottom: 0px;height: 22px} 
             .g-translator-custom .toggle-languages .open .toggle-cert{-moz-transform: scaleY(-1);-o-transform: scaleY(-1);-webkit-transform: scaleY(-1);transform: scaleY(-1)} .g-translator-custom .language-options{position:relative;border:1px solid #CCCCCC;background-color:#EEEEEE;display:none;width:auto;max-height:300px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;overflow-y:auto;overflow-x:hidden;z-index: 100;list-style-type: none;padding-left: 0px} 
             .g-translator-custom .language-options li{list-style-type: none} .g-translator-custom .language-options a{background:#eee;color:#000;padding:5px 8px} .g-translator-custom .language-options a:hover{background:#FFC} .g-translator-custom .language-options::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border-radius:5px;background-color:#F5F5F5} 
             .g-translator-custom .language-options::-webkit-scrollbar{width:5px} 
