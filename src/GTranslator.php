@@ -199,7 +199,7 @@ class GTranslator
      */
     public function setCertColor(string $color): self
     {
-        $this->certColor = urlencode($color);
+        $this->certColor = urlencode($color ?: 'currentColor');
         return $this;
     }
 
