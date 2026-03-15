@@ -1,6 +1,6 @@
 {
     "name": "luminovang/php-ai-models",
-    "description": "AI provider module for the Luminova PHP framework. Integrates OpenAI, Anthropic Claude, and Ollama with a unified interface for chat, vision, embeddings, image generation, speech synthesis, fine-tuning, and more.",
+    "description": "AI client module for model helper. Integrates OpenAI, Anthropic Claude, and Ollama with a unified interface for chat, vision, embeddings, image generation, speech synthesis, fine-tuning, and more.",
     "keywords": [
         "luminova",
         "ai",
